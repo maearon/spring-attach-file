@@ -14,6 +14,23 @@ import java.util.UUID;
 
 @Service
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean validatePasswordResetToken(String token, String email) {
+        Optional<PasswordResetToken> tokenOptional = passwordResetTokenRepository.findByToken(token);
+
+        if (tokenOptional.isEmpty()) {
+            return false;
+        }
+
+        PasswordResetToken resetToken = tokenOptional.get();
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        return resetToken.getUser().getEmail().equalsIgnoreCase(email);
+    }
     
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;

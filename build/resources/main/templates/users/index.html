@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>All users | Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <h1>All users</h1>
+        <div th:if="${users.totalElements > 0}">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="user : ${users.content}">
+                    <div>
+                        <img class="gravatar mr-2" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(user.email,'@','%40')} + '?s=50'}" alt="User avatar">
+                        <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.name}"></a>
+                    </div>
+                    <div sec:authorize="hasRole('ROLE_ADMIN')" th:if="${#authentication.principal.id != user.id}">
+                        <form th:action="@{/users/{id}(id=${user.id})}" th:method="delete" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+            <div th:if="${users.totalPages > 1}" class="pagination justify-content-center mt-3">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${users.first} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/users(page=0)}" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${users.first} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/users(page=${users.number - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}" 
+                        th:classappend="${i == users.number} ? 'active' : ''">
+                        <a class="page-link" th:href="@{/users(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${users.last} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/users(page=${users.number + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${users.last} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/users(page=${users.totalPages - 1})}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div th:unless="${users.totalElements > 0}" class="alert alert-info">
+            No users found.
+        </div>
+    </div>
+</body>
+</html>

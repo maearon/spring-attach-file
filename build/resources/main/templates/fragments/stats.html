@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stats</title>
+</head>
+<body>
+    <div th:fragment="stats(user)" class="stats">
+        <div class="row text-center">
+            <div class="col-6">
+                <a th:href="@{/users/{id}/following(id=${user.id})}">
+                    <strong id="following" class="stat" th:text="${followingCount}">0</strong>
+                    <span>following</span>
+                </a>
+            </div>
+            <div class="col-6">
+                <a th:href="@{/users/{id}/followers(id=${user.id})}">
+                    <strong id="followers" class="stat" th:text="${followerCount}">0</strong>
+                    <span>followers</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,6 +2,11 @@
 
 I'll create a Spring Boot application that replicates the functionality of the Ruby on Rails tutorial sample app. Let's start by setting up the Spring project structure and implementing the core features.
 
+```
+./gradlew clean build --refresh-dependencies
+./gradlew bootRun
+```
+
 ### -------------------------------------------------
 
 Please analyze the Ruby on Rails project located in the rails_tutorial_sample_app_7th_ed directory on the right.

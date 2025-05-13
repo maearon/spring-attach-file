@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Micropost Form</title>
+</head>
+<body>
+    <div th:fragment="micropost_form">
+        <form th:action="@{/microposts}" method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="form-group">
+                <textarea class="form-control" name="content" placeholder="Compose new micropost..." rows="3" required maxlength="140"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="picture" name="picture" accept="image/*">
+                    <label class="custom-file-label" for="picture">Choose image</label>
+                </div>
+                <small class="form-text text-muted">Maximum file size: 5MB</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+        <script>
+            document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+                var fileName = e.target.files[0].name;
+                var nextSibling = e.target.nextElementSibling;
+                nextSibling.innerText = fileName;
+            });
+        </script>
+    </div>
+</body>
+</html>

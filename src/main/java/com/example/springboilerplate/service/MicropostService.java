@@ -3,6 +3,7 @@ package com.example.springboilerplate.service;
 import com.example.springboilerplate.model.Micropost;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.MicropostRepository;
+import com.example.springboilerplate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,15 +24,27 @@ import java.util.UUID;
 public class MicropostService {
 
     private final MicropostRepository micropostRepository;
+    private final UserRepository userRepository;
+
     private final Path uploadPath = Paths.get("uploads");
 
-    public MicropostService() {
-        this.micropostRepository = null;
-        try {
-            Files.createDirectories(uploadPath);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory", e);
+    @Transactional
+    public Micropost create(Long userId, String content, MultipartFile picture) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Micropost micropost = new Micropost();
+        micropost.setUser(user);
+        micropost.setContent(content);
+
+        if (picture != null && !picture.isEmpty()) {
+            String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
+            Files.createDirectories(uploadPath); // ensure directory exists
+            Files.copy(picture.getInputStream(), uploadPath.resolve(filename));
+            micropost.setPicture(filename);
         }
+
+        return micropostRepository.save(micropost);
     }
 
     public Page<Micropost> findAll(Pageable pageable) {
@@ -55,32 +68,23 @@ public class MicropostService {
     }
 
     @Transactional
-    public Micropost create(Micropost micropost, MultipartFile picture) {
-        if (picture != null && !picture.isEmpty()) {
-            try {
-                String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
-                Files.copy(picture.getInputStream(), uploadPath.resolve(filename));
-                micropost.setPicture(filename);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to store file", e);
-            }
-        }
-        return micropostRepository.save(micropost);
-    }
-
-    @Transactional
-    public void delete(Long id) {
+    public boolean delete(Long id, Long userId) {
         Optional<Micropost> micropostOpt = micropostRepository.findById(id);
         if (micropostOpt.isPresent()) {
             Micropost micropost = micropostOpt.get();
+            if (!micropost.getUser().getId().equals(userId)) {
+                return false; // không cho phép xóa nếu không phải chủ post
+            }
             if (micropost.getPicture() != null) {
                 try {
                     Files.deleteIfExists(uploadPath.resolve(micropost.getPicture()));
                 } catch (IOException e) {
-                    // Log error but continue with deletion
+                    // Log error nếu cần
                 }
             }
             micropostRepository.deleteById(id);
+            return true;
         }
+        return false;
     }
 }

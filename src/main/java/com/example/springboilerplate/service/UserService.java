@@ -34,6 +34,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     @Transactional
     public User create(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -105,5 +109,43 @@ public class UserService {
 
     public Page<User> getFollowersPaginated(Long userId, Pageable pageable) {
         return userRepository.findFollowersPaginated(userId, pageable);
+    }
+
+    // Add this method to the UserService class
+    public User updateUser(Long id, String name, String email, String password) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setName(name);
+        user.setEmail(email);
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+        return userRepository.save(user);
+    }
+
+    // Other methods in UserService
+    public boolean deleteUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean requestPasswordReset(String email) {
+        // Implement the logic to handle password reset request
+        // For example, check if the email exists and send a reset email
+        // Return true if successful, false otherwise
+        return true; // Placeholder implementation
+    }
+
+    // Add this method to the UserService class
+    public User registerNewUser(String name, String email, String password) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password); // Ensure password is hashed before saving
+        return userRepository.save(user); // Assuming userRepository is already defined
     }
 }

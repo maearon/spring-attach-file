@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,7 +41,9 @@ public class AuthApiController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         
-        return ResponseEntity.ok(new JwtResponseDto(jwt));
+        User user = (User) authentication.getPrincipal();
+        JwtResponseDto jwtResponse = new JwtResponseDto(jwt, user.getId(), user.getName(), user.getEmail(), user.isAdmin());
+        return ResponseEntity.ok((Object) jwtResponse); // ép kiểu về Object
     }
 
     @PostMapping("/signup")
@@ -51,7 +53,7 @@ public class AuthApiController {
                     .body(new ApiResponse(false, "Email is already taken!"));
         }
 
-        User user = userService.registerNewUser(
+        userService.registerNewUser(
                 registerDto.getName(),
                 registerDto.getEmail(),
                 registerDto.getPassword()

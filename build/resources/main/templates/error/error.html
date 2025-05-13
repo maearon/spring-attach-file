@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error | Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="center jumbotron">
+            <h1 th:text="${status + ' - ' + error}">Error</h1>
+            <p th:text="${message}">Error message</p>
+            <a th:href="@{/}" class="btn btn-primary">Go to Home Page</a>
+        </div>
+    </div>
+</body>
+</html>

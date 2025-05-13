@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <aside class="col-md-4">
+                <section class="user_info">
+                    <div th:replace="~{fragments/user_info :: user_info(user=${currentUser})}"></div>
+                </section>
+                <section class="stats">
+                    <div th:replace="~{fragments/stats :: stats(user=${currentUser})}"></div>
+                </section>
+                <section class="micropost_form">
+                    <div th:replace="~{fragments/micropost_form :: micropost_form}"></div>
+                </section>
+            </aside>
+            <div class="col-md-8">
+                <div th:replace="~{fragments/feed :: feed}"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

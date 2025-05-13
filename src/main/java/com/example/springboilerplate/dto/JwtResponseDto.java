@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JwtResponseDto {
     private String accessToken;
+    @Builder.Default
     private String tokenType = "Bearer";
     private Long id;
     private String name;

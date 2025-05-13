@@ -15,4 +15,8 @@ public interface PasswordResetTokenService {
     void deleteToken(PasswordResetToken token);
     
     void deleteExpiredTokens();
+
+    boolean validatePasswordResetToken(String token, String email);
 }
+
+

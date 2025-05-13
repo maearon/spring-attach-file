@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="center jumbotron">
+            <h1>Welcome to the Sample App</h1>
+            <h2>
+                This is the home page for the
+                <a href="https://www.railstutorial.org/">Ruby on Rails Tutorial</a>
+                sample application.
+            </h2>
+            <a th:href="@{/signup}" class="btn btn-lg btn-primary">Sign up now!</a>
+        </div>
+        <div class="center">
+            <img src="https://rubyonrails.org/assets/images/opengraph.png" alt="Rails logo" width="200">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.name} + ' | Ruby on Rails Tutorial Sample App'">User Profile</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row">
+            <aside class="col-md-4">
+                <section>
+                    <h1>
+                        <img class="gravatar" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(user.email,'@','%40')} + '?s=80'}" alt="User avatar">
+                        <span th:text="${user.name}"></span>
+                    </h1>
+                </section>
+                <section>
+                    <div th:replace="~{fragments/stats :: stats(user=${user})}"></div>
+                    <div sec:authorize="isAuthenticated()" th:if="${user.id != #authentication.principal.id}">
+                        <div th:if="${following}">
+                            <form th:action="@{/relationships/{id}/unfollow(id=${user.id})}" method="post">
+                                <button type="submit" class="btn btn-primary">Unfollow</button>
+                            </form>
+                        </div>
+                        <div th:unless="${following}">
+                            <form th:action="@{/relationships/{id}/follow(id=${user.id})}" method="post">
+                                <button type="submit" class="btn btn-outline-primary">Follow</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+            <div class="col-md-8">
+                <h3>Microposts (<span th:text="${microposts.totalElements}"></span>)</h3>
+                <div th:if="${microposts.totalElements > 0}">
+                    <ul class="list-unstyled">
+                        <li class="mb-3" th:each="micropost : ${microposts.content}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text" th:text="${micropost.content}"></p>
+                                    <div th:if="${micropost.picture != null}">
+                                        <img th:src="@{'/uploads/' + ${micropost.picture}}" alt="Micropost image" class="img-fluid mb-2">
+                                    </div>
+                                    <p class="card-text">
+                                        <small class="text-muted" th:text="${#temporals.format(micropost.createdAt, 'dd MMM yyyy HH:mm')}"></small>
+                                    </p>
+                                    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.id == micropost.user.id || #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                        <form th:action="@{/microposts/{id}(id=${micropost.id})}" th:method="delete">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div th:if="${microposts.totalPages > 1}" class="pagination justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${microposts.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=0)}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.number - 1})}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, microposts.totalPages - 1)}" 
+                                th:classappend="${i == microposts.number} ? 'active' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${i})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.number + 1})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.totalPages - 1})}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div th:unless="${microposts.totalElements > 0}" class="alert alert-info">
+                    This user has not posted any microposts yet.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
