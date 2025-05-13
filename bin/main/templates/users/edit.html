@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user | Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1>Update your profile</h1>
+                <form th:action="@{/users/{id}(id=${user.id})}" th:method="put" th:object="${user}">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" th:field="*{name}" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" th:field="*{email}" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" th:field="*{password}" placeholder="Leave blank if you don't want to change it">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordConfirmation">Confirmation</label>
+                        <input type="password" class="form-control" id="passwordConfirmation" name="passwordConfirmation" th:field="*{passwordConfirmation}" placeholder="Leave blank if you don't want to change it">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+                <div class="gravatar_edit mt-3">
+                    <img class="gravatar" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(user.email,'@','%40')} + '?s=80'}" alt="User avatar">
+                    <a href="https://gravatar.com/emails" target="_blank" rel="noopener">change</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

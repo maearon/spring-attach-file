@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Info</title>
+</head>
+<body>
+    <div th:fragment="user_info(user)">
+        <div class="user-info">
+            <img class="gravatar mb-2" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(user.email,'@','%40')} + '?s=80'}" alt="User avatar">
+            <h1 th:text="${user.name}">User Name</h1>
+            <span><a th:href="@{/users/{id}(id=${user.id})}">view my profile</a></span>
+            <span th:text="${micropostCount + ' ' + (micropostCount == 1 ? 'micropost' : 'microposts')}">0 microposts</span>
+        </div>
+    </div>
+</body>
+</html>

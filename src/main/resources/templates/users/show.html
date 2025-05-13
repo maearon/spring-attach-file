@@ -44,6 +44,49 @@
                                     <p class="card-text">
                                         <small class="text-muted" th:text="${#temporals.format(micropost.createdAt, 'dd MMM yyyy HH:mm')}"></small>
                                     </p>
-
-```html file="spring-boilerplate/src/main/resources/templates/users/new.html"
-... This file was left out for brevity. Assume it is correct and does not need any modifications. ...
+                                    <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.id == micropost.user.id || #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                        <form th:action="@{/microposts/{id}(id=${micropost.id})}" th:method="delete">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div th:if="${microposts.totalPages > 1}" class="pagination justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${microposts.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=0)}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.first} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.number - 1})}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, microposts.totalPages - 1)}" 
+                                th:classappend="${i == microposts.number} ? 'active' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${i})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.number + 1})}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${microposts.last} ? 'disabled' : ''">
+                                <a class="page-link" th:href="@{/users/{id}(id=${user.id}, page=${microposts.totalPages - 1})}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div th:unless="${microposts.totalElements > 0}" class="alert alert-info">
+                    This user has not posted any microposts yet.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

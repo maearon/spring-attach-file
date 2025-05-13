@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Log in | Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1>Log in</h1>
+                <form th:action="@{/login}" method="post">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                        <label class="form-check-label" for="remember-me">Remember me on this computer</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log in</button>
+                </form>
+                <p class="mt-3">New user? <a th:href="@{/signup}">Sign up now!</a></p>
+                <p>Forgot password? <a th:href="@{/password_resets/new}">Reset it here</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

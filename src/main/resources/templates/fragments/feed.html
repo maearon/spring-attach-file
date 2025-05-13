@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed</title>
+</head>
+<body>
+    <div th:fragment="feed">
+        <h3>Micropost Feed</h3>
+        <div th:if="${feed.totalElements > 0}">
+            <ul class="list-unstyled">
+                <li class="mb-3" th:each="micropost : ${feed.content}">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img class="gravatar mr-2" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(micropost.user.email,'@','%40')} + '?s=50'}" alt="User avatar">
+                                <a th:href="@{/users/{id}(id=${micropost.user.id})}" th:text="${micropost.user.name}"></a>
+                            </div>
+                            <p class="card-text" th:text="${micropost.content}"></p>
+                            <div th:if="${micropost.picture != null}">
+                                <img th:src="@{'/uploads/' + ${micropost.picture}}" alt="Micropost image" class="img-fluid mb-2">
+                            </div>
+                            <p class="card-text">
+                                <small class="text-muted" th:text="${#temporals.format(micropost.createdAt, 'dd MMM yyyy HH:mm')}"></small>
+                            </p>
+                            <div sec:authorize="isAuthenticated()" th:if="${#authentication.principal.id == micropost.user.id || #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                <form th:action="@{/microposts/{id}(id=${micropost.id})}" th:method="delete">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div th:if="${feed.totalPages > 1}" class="pagination justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${feed.first} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/(page=0)}" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${feed.first} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/(page=${feed.number - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, feed.totalPages - 1)}" 
+                        th:classappend="${i == feed.number} ? 'active' : ''">
+                        <a class="page-link" th:href="@{/(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${feed.last} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/(page=${feed.number + 1})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${feed.last} ? 'disabled' : ''">
+                        <a class="page-link" th:href="@{/(page=${feed.totalPages - 1})}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div th:unless="${feed.totalElements > 0}" class="alert alert-info">
+            No microposts in your feed yet. Follow some users to see their posts here!
+        </div>
+    </div>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class RelationshipsApiController {
         return ResponseEntity.ok(Map.of("status", "success", "message", "User followed successfully"));
     }
 
-    @PostMapping("/{id}/unfollow")
+    @DeleteMapping("/{id}/unfollow")
     public ResponseEntity<?> unfollow(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
         relationshipService.unfollow(currentUser.getId(), id);
         return ResponseEntity.ok(Map.of("status", "success", "message", "User unfollowed successfully"));
