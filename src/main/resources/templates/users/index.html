@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>All users | Ruby on Rails Tutorial Sample App</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <h1>All users</h1>
+        
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center" th:if="${users.totalPages > 1}">
+                <li class="page-item" th:classappend="${users.first ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/users(page=${users.number - 1})}" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}" 
+                    th:classappend="${i == users.number ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/users(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${users.last ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/users(page=${users.number + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        
+        <ul class="list-unstyled">
+            <li class="mb-3 d-flex align-items-center" th:each="user : ${users.content}">
+                <img class="gravatar me-3" th:src="@{'https://secure.gravatar.com/avatar/' + ${#strings.replace(user.email,'@','%40')} + '?s=50'}" alt="User avatar">
+                <div>
+                    <a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.name}"></a>
+                    <form th:if="${user.id != #authentication.principal.id}" th:action="@{/users/{id}/delete(id=${user.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger ms-2" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

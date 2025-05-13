@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title != null ? title + ' | ' : ''} + 'Ruby on Rails Tutorial Sample App'">Sample App</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/site.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <div class="container mt-4">
+        <div th:if="${success != null}" class="alert alert-success" role="alert" th:text="${success}"></div>
+        <div th:if="${info != null}" class="alert alert-info" role="alert" th:text="${info}"></div>
+        <div th:if="${warning != null}" class="alert alert-warning" role="alert" th:text="${warning}"></div>
+        <div th:if="${error != null}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+        
+        <div th:replace="~{:: content}"></div>
+    </div>
+    
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/site.js}"></script>
+</body>
+</html>
