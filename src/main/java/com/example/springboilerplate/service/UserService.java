@@ -142,10 +142,16 @@ public class UserService {
 
     // Add this method to the UserService class
     public User registerNewUser(String name, String email, String password) {
+        // user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // user.setActivationDigest(UUID.randomUUID().toString());
+        // User savedUser = userRepository.save(user);
+        // emailService.sendActivationEmail(savedUser);
+        // return savedUser;
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPassword(password); // Ensure password is hashed before saving
+        user.setPassword(passwordEncoder.encode(password)); // Ensure password is hashed before saving
+        user.setActivationDigest(UUID.randomUUID().toString());
         return userRepository.save(user); // Assuming userRepository is already defined
     }
 }

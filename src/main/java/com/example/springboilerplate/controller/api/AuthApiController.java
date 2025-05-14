@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.example.springboilerplate.security.UserPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +43,15 @@ public class AuthApiController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         
-        User user = (User) authentication.getPrincipal();
-        JwtResponseDto jwtResponse = new JwtResponseDto(jwt, user.getId(), user.getName(), user.getEmail(), user.isAdmin());
+        // User user = (User) authentication.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        JwtResponseDto jwtResponse = new JwtResponseDto(
+            jwt,
+            userPrincipal.getId(),
+            userPrincipal.getName(),
+            userPrincipal.getEmail(),
+            userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        );
         return ResponseEntity.ok((Object) jwtResponse); // ép kiểu về Object
     }
 
