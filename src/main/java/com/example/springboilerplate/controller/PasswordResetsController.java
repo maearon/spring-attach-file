@@ -1,6 +1,5 @@
 package com.example.springboilerplate.controller;
 
-import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

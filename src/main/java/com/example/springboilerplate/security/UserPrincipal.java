@@ -13,13 +13,16 @@ import java.util.Objects;
 
 public class UserPrincipal implements UserDetails {
     private Long id;
+
     private String name;
+
     private String email;
 
     @JsonIgnore
     private String password;
 
     private boolean activated;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(Long id, String name, String email, String password, boolean activated,
@@ -64,8 +67,8 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -74,8 +77,8 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override

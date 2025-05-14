@@ -13,12 +13,13 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     @Value("${app.jwtSecret:JWTSuperSecretKey}")
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationInMs:86400000}")
+    @Value("${app.jwtExpirationInMs:604800000}")
     private int jwtExpirationInMs;
 
     public String generateToken(Authentication authentication) {
@@ -38,10 +39,8 @@ public class JwtTokenProvider {
     }
 
     public Long getUserIdFromJWT(String token) {
-        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(jwtSecret.getBytes())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -51,8 +50,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                .setSigningKey(jwtSecret.getBytes())
+                .build()
+                .parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");
