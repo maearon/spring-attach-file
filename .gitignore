@@ -1,0 +1,50 @@
+# ========== Gradle ==========
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Wrapper logs
+gradle-wrapper.properties
+gradle-wrapper.jar
+
+# ========== IDEs ==========
+*.iml
+.idea/
+.vscode/
+*.sw?
+*.swp
+*.swo
+
+# ========== OS ==========
+.DS_Store
+Thumbs.db
+
+# ========== Logs ==========
+*.log
+logs/
+*.out
+
+# ========== Java ==========
+*.class
+*.jar
+*.war
+*.ear
+
+# ========== Environment ==========
+.env
+*.env
+
+# ========== Spring Boot ==========
+# Ignore local dev DB
+*.h2.db
+*.mv.db
+
+# Spring Boot devtools settings
+.spring-boot-devtools.properties
+
+# ========== Test ==========
+test-output/
+target/
+
+# ========== IntelliJ Cache ==========
+out/
