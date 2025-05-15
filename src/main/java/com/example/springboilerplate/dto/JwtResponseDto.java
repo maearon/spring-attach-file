@@ -1,5 +1,7 @@
 package com.example.springboilerplate.dto;
 
+import java.time.Instant;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,19 +12,44 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponseDto {
-    private String accessToken;
-    @Builder.Default
-    private String tokenType = "Bearer";
-    private Long id;
-    private String name;
-    private String email;
-    private boolean admin;
+    // private String accessToken;
+    // @Builder.Default
+    // private String tokenType = "Bearer";
+    // private Long id;
+    // private String name;
+    // private String email;
+    // private boolean admin;
+    private UserDto user;
+    private TokenGroupDto tokens;
 
-    public JwtResponseDto(String accessToken, Long id, String name, String email, boolean admin) {
-        this.accessToken = accessToken;
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.admin = admin;
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserDto {
+        private Long id;
+        private String email;
+        private String name;
+        private boolean admin;
+        // private String passwordHash;
+        // private String token;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TokenGroupDto {
+        private TokenDto access;
+        private TokenDto refresh;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TokenDto {
+        private String token;
+        private Instant expires;
     }
 }

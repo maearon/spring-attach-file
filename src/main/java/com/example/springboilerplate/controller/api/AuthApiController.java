@@ -8,6 +8,9 @@ import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.JwtTokenProvider;
 import com.example.springboilerplate.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import java.time.Instant;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,16 +45,42 @@ public class AuthApiController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
+        String jwtRefresh = tokenProvider.generateRefreshToken(authentication);
         
         // User user = (User) authentication.getPrincipal();
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        JwtResponseDto jwtResponse = new JwtResponseDto(
-            jwt,
-            userPrincipal.getId(),
-            userPrincipal.getName(),
-            userPrincipal.getEmail(),
-            userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-        );
+        // JwtResponseDto jwtResponse = new JwtResponseDto(
+        //     jwt,
+        //     userPrincipal.getId(),
+        //     userPrincipal.getName(),
+        //     userPrincipal.getEmail(),
+        //     userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+        // );
+        // User user = userService.findById(userPrincipal.getId());
+
+        Instant expiresAt = tokenProvider.getExpirationFromToken(jwt); // bạn cần cài đặt hàm này
+        Instant expiresAtRefresh = tokenProvider.getExpirationFromToken(jwtRefresh); // bạn cần cài đặt hàm này
+
+        JwtResponseDto jwtResponse = JwtResponseDto.builder()
+            .user(JwtResponseDto.UserDto.builder()
+                .id(userPrincipal.getId())
+                .email(userPrincipal.getEmail())
+                .name(userPrincipal.getName())
+                .admin(userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                // .passwordHash(user.getPasswordDigest()) // cần hàm `getPasswordDigest()` trong entity
+                // .token(jwt)
+                .build())
+            .tokens(JwtResponseDto.TokenGroupDto.builder()
+                .access(JwtResponseDto.TokenDto.builder()
+                    .token(jwt)
+                    .expires(expiresAt)
+                    .build())
+                .refresh(JwtResponseDto.TokenDto.builder()
+                    .token(jwtRefresh) // bạn cần tạo refresh token nếu cần
+                    .expires(expiresAtRefresh)
+                    .build())
+                .build())
+            .build();
         return ResponseEntity.ok((Object) jwtResponse); // ép kiểu về Object
     }
 
