@@ -1,0 +1,77 @@
+# Tạo một file zip rỗng để chuẩn bị repo DevOps mẫu mà user yêu cầu
+import zipfile
+from pathlib import Path
+
+# Tạo cấu trúc thư mục và nội dung file mẫu
+base_path = Path("/mnt/data/devops-todo-sample")
+(base_path / ".github" / "workflows").mkdir(parents=True, exist_ok=True)
+(base_path / "devops").mkdir(exist_ok=True)
+(base_path / "api").mkdir(exist_ok=True)
+
+# File deploy script
+(base_path / "devops/deploy.sh").write_text("""#!/bin/bash
+echo "Deploying to Vercel..."
+vercel deploy --prod
+""")
+
+# File GitHub Actions
+(base_path / ".github/workflows/deploy.yml").write_text("""name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Deploy to Vercel
+        run: npx vercel deploy --prod --token=$VERCEL_TOKEN
+""")
+
+# File vercel.json
+(base_path / "vercel.json").write_text("""{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1.ts" }
+  ]
+}
+""")
+
+# File .env.example
+(base_path / ".env.example").write_text("""# Vercel Token for GitHub Action
+VERCEL_TOKEN=your-vercel-token
+
+# Sentry DSN for monitoring
+SENTRY_DSN=your-sentry-dsn
+
+# Database URL
+DATABASE_URL=postgres://user:password@neon.tech/db
+""")
+
+# File sentry config
+(base_path / "devops/sentry.config.ts").write_text("""import * as Sentry from "@sentry/node";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
+""")
+
+# File Dockerfile (optional)
+(base_path / "Dockerfile").write_text("""FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["npm", "run", "dev"]
+""")
+
+# Đóng gói thành file zip
+zip_path = Path("/mnt/data/devops-todo-template.zip")
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    for file in base_path.rglob("*"):
+        zipf.write(file, file.relative_to(base_path))
+
+zip_path.name
