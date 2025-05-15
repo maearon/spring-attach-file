@@ -4,6 +4,7 @@ import com.example.springboilerplate.dto.ApiResponse;
 import com.example.springboilerplate.dto.JwtResponseDto;
 import com.example.springboilerplate.dto.LoginDto;
 import com.example.springboilerplate.dto.RegisterDto;
+import com.example.springboilerplate.dto.SessionResponseDto;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.JwtTokenProvider;
 import com.example.springboilerplate.service.UserService;
@@ -15,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.example.springboilerplate.security.UserPrincipal;
@@ -34,6 +37,26 @@ public class AuthApiController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final UserService userService;
+
+    @GetMapping("/sessions")
+    public ResponseEntity<?> sessions(@AuthenticationPrincipal UserPrincipal currentUser) {
+        if (currentUser == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        // String emailHash = DigestUtils.md5Hex(currentUser.getEmail().toLowerCase());
+        // String avatarUrl = "https://secure.gravatar.com/avatar/" + emailHash + "?s=50";
+
+        SessionResponseDto.UserDto userDto = SessionResponseDto.UserDto.builder()
+                .id(currentUser.getId())
+                .email(currentUser.getEmail())
+                .name(currentUser.getName())
+                .admin(currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                // .avatar(avatarUrl)
+                .build();
+
+        return ResponseEntity.ok(Map.of("user", userDto));
+    }
 
     @PostMapping("/login")
     // public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginDto) {

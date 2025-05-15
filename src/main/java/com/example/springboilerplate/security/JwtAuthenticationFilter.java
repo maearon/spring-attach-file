@@ -1,5 +1,6 @@
 package com.example.springboilerplate.security;
 
+import com.example.springboilerplate.security.JwtTokenProvider.TokenExpiredException;
 import com.example.springboilerplate.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +38,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromJWT(jwt);
+                Long userId = null;
+                try {
+                    userId = tokenProvider.getUserIdFromJWT(jwt);
+                } catch (Exception e) {
+                    logger.warn("Invalid JWT while extracting user ID", e);
+                }
+
+                if (userId != null) {
+                    // proceed with authentication
+                }
 
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -46,8 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+        } catch (TokenExpiredException ex) {
+            logger.warn("Token expired: " + ex.getMessage(), ex);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT token has expired");
+            return;
         }
 
         filterChain.doFilter(request, response);

@@ -1,5 +1,7 @@
 package com.example.springboilerplate.security;
 
+import org.springframework.security.core.AuthenticationException;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -82,15 +84,22 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(authToken);
             return true;
-        } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
             logger.error("Expired JWT token");
+            throw new TokenExpiredException("JWT token has expired");
+        } catch (MalformedJwtException ex) {
+            logger.error("Invalid JWT token");
         } catch (UnsupportedJwtException ex) {
             logger.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
             logger.error("JWT claims string is empty");
         }
         return false;
+    }
+
+    public class TokenExpiredException extends AuthenticationException {
+        public TokenExpiredException(String msg) {
+            super(msg);
+        }
     }
 }
