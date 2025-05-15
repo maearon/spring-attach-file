@@ -10,7 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.example.springboilerplate.dto.MicropostResponseDto;
+import com.example.springboilerplate.dto.UserSummaryDto;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,8 +64,18 @@ public class MicropostService {
         return micropostRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
     }
 
-    public Page<Micropost> getFeed(Long userId, Pageable pageable) {
-        return micropostRepository.findFeed(userId, pageable);
+    public Page<MicropostResponseDto> getFeed(Long userId, Pageable pageable) {
+        return micropostRepository.findFeed(userId, pageable)
+                .map(m -> new MicropostResponseDto(
+                        m.getId(),
+                        m.getContent(),
+                        m.getCreatedAt(),
+                        new UserSummaryDto(
+                                m.getUser().getId(),
+                                m.getUser().getName(),
+                                m.getUser().getEmail()
+                        )
+                ));
     }
 
     @Transactional

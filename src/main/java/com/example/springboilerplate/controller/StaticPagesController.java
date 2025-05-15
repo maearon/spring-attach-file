@@ -1,7 +1,8 @@
 package com.example.springboilerplate.controller;
 
+import com.example.springboilerplate.dto.MicropostResponseDto;
 import com.example.springboilerplate.model.Micropost;
-import com.example.springboilerplate.model.User;
+import com.example.springboilerplate.security.UserPrincipal;
 import com.example.springboilerplate.service.MicropostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,10 +19,11 @@ public class StaticPagesController {
     private final MicropostService micropostService;
 
     @GetMapping("/")
-    public String home(@AuthenticationPrincipal User currentUser, Model model) {
+    public String home(@AuthenticationPrincipal UserPrincipal currentUser, Model model) {
         if (currentUser != null) {
             model.addAttribute("micropost", new Micropost());
-            Page<Micropost> feed = micropostService.getFeed(currentUser.getId(), PageRequest.of(0, 10));
+            int safePage = Math.max(0, 1 - 1);
+            Page<MicropostResponseDto> feed = micropostService.getFeed(currentUser.getId(), PageRequest.of(0, 5));
             model.addAttribute("feed", feed);
             return "home/home_with_feed";
         }

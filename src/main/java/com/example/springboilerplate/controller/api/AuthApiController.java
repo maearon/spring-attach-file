@@ -5,7 +5,6 @@ import com.example.springboilerplate.dto.JwtResponseDto;
 import com.example.springboilerplate.dto.LoginDto;
 import com.example.springboilerplate.dto.RegisterDto;
 import com.example.springboilerplate.dto.SessionResponseDto;
-import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.JwtTokenProvider;
 import com.example.springboilerplate.service.UserService;
 import lombok.RequiredArgsConstructor;
