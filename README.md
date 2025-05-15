@@ -28,6 +28,15 @@ SELECT * FROM USERS
 SELECT * FROM users WHERE email='manhng132@gmail.com'
 ```
 ```
+IntelliJ IDEA: sudo snap install intellij-idea-community --classic
+
+Ctrl + Shift + A → gõ Registry... → Choose.
+
+compiler.automake.allow.when.app.running
+
+Ctrl+Shift+A → Type Build project automatically --> Check.
+```
+```
 ./gradlew clean build --refresh-dependencies
 ./gradlew bootRun
 ```
