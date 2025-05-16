@@ -17,8 +17,17 @@ public class RelationshipService {
     private final RelationshipRepository relationshipRepository;
     private final UserRepository userRepository;
 
+    public Optional<Long> findRelationshipId(Long followerId, Long followedId) {
+        return relationshipRepository.findByFollowerIdAndFollowedId(followerId, followedId)
+                                    .map(Relationship::getId);
+    }
+
+    // public boolean isFollowing(Long followerId, Long followedId) {
+    //     return relationshipRepository.existsByFollowerIdAndFollowedId(followerId, followedId);
+    // }
+
     public boolean isFollowing(Long followerId, Long followedId) {
-        return relationshipRepository.existsByFollowerIdAndFollowedId(followerId, followedId);
+        return findRelationshipId(followerId, followedId).isPresent();
     }
 
     public int countFollowing(Long userId) {

@@ -11,6 +11,7 @@ import userApi, { UserShow } from '../../../components/shared/api/userApi';
 import flashMessage from '../../../components/shared/flashMessages';
 import FollowForm from '../../../components/users/FollowForm';
 import Link from 'next/link';
+import { getGravatarUrl } from '@/utils/gravatar';
 
 const Show = ({ params }: { params: { id: string } }) => {
   const [user, setUser] = useState<UserShow | null>(null);
@@ -98,7 +99,7 @@ const Show = ({ params }: { params: { id: string } }) => {
           <h1>
             <Image
               className={"gravatar"}
-              src={`https://secure.gravatar.com/avatar/${user.gravatar_id}?s=${user.size}`}
+              src={getGravatarUrl(user.email, 50)}
               alt="Example User"
               width={50}
               height={50}

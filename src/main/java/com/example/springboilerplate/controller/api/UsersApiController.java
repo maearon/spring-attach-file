@@ -2,16 +2,29 @@ package com.example.springboilerplate.controller.api;
 
 import com.example.springboilerplate.dto.ApiResponse;
 import com.example.springboilerplate.dto.MicropostResponseDto;
+import com.example.springboilerplate.dto.ShowResponseDto;
 import com.example.springboilerplate.dto.UserDto;
+import com.example.springboilerplate.dto.UserShowDto;
+import com.example.springboilerplate.dto.UserSummaryDto;
 import com.example.springboilerplate.dto.UsersResponseDto;
+import com.example.springboilerplate.model.Micropost;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.UserPrincipal;
+import com.example.springboilerplate.service.MicropostService;
+import com.example.springboilerplate.service.RelationshipService;
 import com.example.springboilerplate.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -22,6 +35,8 @@ import jakarta.validation.Valid;
 public class UsersApiController {
 
     private final UserService userService;
+    private final MicropostService micropostService;
+    private final RelationshipService relationshipService;
 
     // @GetMapping
     // public ResponseEntity<Page<User>> index(@RequestParam(defaultValue = "0") int page) {
@@ -40,11 +55,145 @@ public class UsersApiController {
         return ResponseEntity.ok(userService.findAll(PageRequest.of(safePage, 5)));
     }
 
+    // @GetMapping("/{id}")
+    // public ResponseEntity<User> show(@PathVariable Long id) {
+    //     return userService.findById(id)
+    //             .map(ResponseEntity::ok)
+    //             .orElse(ResponseEntity.notFound().build());
+    // }
+    // @GetMapping("/{id}")
+    // public String show(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal currentUser) {
+    //     return userService.findById(id).map(user -> {
+    //         model.addAttribute("user", user);
+    //         Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
+    //         model.addAttribute("microposts", microposts);
+            
+    //         if (currentUser != null) {
+    //             model.addAttribute("following", relationshipService.isFollowing(currentUser.getId(), id));
+    //         }
+            
+    //         model.addAttribute("followingCount", relationshipService.countFollowing(id));
+    //         model.addAttribute("followersCount", relationshipService.countFollowers(id));
+            
+    //         return "users/show";
+    //     }).orElse("redirect:/");
+    // }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<?> show(@PathVariable Long id,
+    //                             @AuthenticationPrincipal UserPrincipal currentUser) {
+
+    //     return userService.findById(id).map(user -> {
+    //         // Lấy danh sách microposts
+    //         Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
+
+    //         // Đếm follow
+    //         long followingCount = relationshipService.countFollowing(id);
+    //         long followersCount = relationshipService.countFollowers(id);
+
+    //         // Kiểm tra current user có đang follow không
+    //         boolean isFollowing = false;
+    //         Long idRelationship = null;
+    //         if (currentUser != null) {
+    //             isFollowing = relationshipService.isFollowing(currentUser.getId(), id);
+    //             idRelationship = relationshipService.findRelationshipId(currentUser.getId(), id)
+    //                                                 .orElse(null); // thêm hàm này trong service
+    //         }
+
+    //         // Build UserShowDto
+    //         UserShowDto userDto = new UserShowDto(
+    //                 user.getId(),
+    //                 user.getName(),
+    //                 user.getEmail(),
+    //                 followingCount,
+    //                 followersCount,
+    //                 isFollowing
+    //         );
+
+    //         // Build danh sách MicropostResponseDto
+    //         List<MicropostResponseDto> micropostDtos = microposts.getContent().stream().map(m -> {
+    //             String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
+    //             return new MicropostResponseDto(
+    //                     m.getId(),
+    //                     m.getContent(),
+    //                     m.getCreatedAt(),
+    //                     new UserSummaryDto(
+    //                             m.getUser().getId(),
+    //                             m.getUser().getName(),
+    //                             m.getUser().getEmail()
+    //                     )
+    //             );
+    //         }).toList();
+
+    //         // Trả về response DTO
+    //         ShowResponseDto response = new ShowResponseDto(
+    //                 idRelationship,
+    //                 micropostDtos,
+    //                 microposts.getTotalElements(),
+    //                 userDto
+    //         );
+
+    //         return ResponseEntity.ok(response);
+    //     }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
+    // }
     @GetMapping("/{id}")
-    public ResponseEntity<User> show(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> show(@PathVariable Long id,
+                                @AuthenticationPrincipal UserPrincipal currentUser) {
+
+        Optional<User> optionalUser = userService.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        // Lấy danh sách microposts
+        Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
+
+        // Đếm follow
+        long followingCount = relationshipService.countFollowing(id);
+        long followersCount = relationshipService.countFollowers(id);
+
+        // Kiểm tra current user có đang follow không
+        boolean isFollowing = false;
+        Long idRelationship = null;
+        if (currentUser != null) {
+            isFollowing = relationshipService.isFollowing(currentUser.getId(), id);
+            idRelationship = relationshipService.findRelationshipId(currentUser.getId(), id)
+                                                .orElse(null);
+        }
+
+        UserShowDto userDto = new UserShowDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                followingCount,
+                followersCount,
+                isFollowing
+        );
+
+        List<MicropostResponseDto> micropostDtos = microposts.getContent().stream().map(m -> {
+            String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
+            return new MicropostResponseDto(
+                    m.getId(),
+                    m.getContent(),
+                    m.getCreatedAt(),
+                    new UserSummaryDto(
+                            m.getUser().getId(),
+                            m.getUser().getName(),
+                            m.getUser().getEmail()
+                    )
+            );
+        }).toList();
+
+        ShowResponseDto response = new ShowResponseDto(
+                idRelationship,
+                micropostDtos,
+                microposts.getTotalElements(),
+                userDto
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/following")

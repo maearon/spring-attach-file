@@ -45,6 +45,7 @@ export interface CreateResponse<UserCreate> {
 export interface UserShow {
   readonly id: string
   name: string
+  email: string
   gravatar_id: string
   size: number
   following: number

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class MicropostResponseDto {
     private Long id;
     private String content;
+    // private String gravatar_id;
     private LocalDateTime createdAt;
     private UserSummaryDto user;
 }
