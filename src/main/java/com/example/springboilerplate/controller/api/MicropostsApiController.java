@@ -57,12 +57,12 @@ public class MicropostsApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<?> destroy(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal currentUser) {
         boolean deleted = micropostService.delete(id, currentUser.getId());
         if (deleted) {
-            return ResponseEntity.ok(new ApiResponse(true, "Micropost deleted successfully"));
+            return ResponseEntity.ok(Map.of("flash", List.of("success", "Micropost deleted")));
         } else {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to delete micropost"));
+            return ResponseEntity.badRequest().body(Map.of("error", List.of("Failed to delete micropost")));
         }
     }
 }
