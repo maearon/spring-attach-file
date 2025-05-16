@@ -1,5 +1,8 @@
 package com.example.springboilerplate.service;
 
+import com.example.springboilerplate.dto.MicropostResponseDto;
+import com.example.springboilerplate.dto.UserSummaryDto;
+import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +25,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    // public Page<UsersResponseDto> findAll(Pageable pageable) {
+    //     return userRepository.findAll(pageable);
+    // }
+    public Page<UsersResponseDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(m -> new UsersResponseDto(
+                        m.getId(),
+                        m.getName(),
+                        m.getEmail()
+                ));
     }
 
     public Optional<User> findById(Long id) {

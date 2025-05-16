@@ -1,8 +1,11 @@
 package com.example.springboilerplate.controller.api;
 
 import com.example.springboilerplate.dto.ApiResponse;
+import com.example.springboilerplate.dto.MicropostResponseDto;
 import com.example.springboilerplate.dto.UserDto;
+import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.User;
+import com.example.springboilerplate.security.UserPrincipal;
 import com.example.springboilerplate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,9 +23,21 @@ public class UsersApiController {
 
     private final UserService userService;
 
+    // @GetMapping
+    // public ResponseEntity<Page<User>> index(@RequestParam(defaultValue = "0") int page) {
+    //     return ResponseEntity.ok(userService.findAll(PageRequest.of(page, 10)));
+    // }
     @GetMapping
-    public ResponseEntity<Page<User>> index(@RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(userService.findAll(PageRequest.of(page, 10)));
+    public ResponseEntity<Page<UsersResponseDto>> index(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        // if (currentUser == null) {
+        //     return ResponseEntity.status(401).body("Unauthorized");
+        // }
+
+        int safePage = Math.max(0, page - 1);
+        return ResponseEntity.ok(userService.findAll(PageRequest.of(safePage, 5)));
     }
 
     @GetMapping("/{id}")

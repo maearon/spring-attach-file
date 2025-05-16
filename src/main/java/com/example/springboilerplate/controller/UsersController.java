@@ -1,5 +1,6 @@
 package com.example.springboilerplate.controller;
 
+import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.Micropost;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.service.MicropostService;
@@ -28,7 +29,7 @@ public class UsersController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public String index(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<User> users = userService.findAll(PageRequest.of(page, 10));
+        Page<UsersResponseDto> users = userService.findAll(PageRequest.of(page, 10));
         model.addAttribute("users", users);
         return "users/index";
     }
