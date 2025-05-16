@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/microposts")
@@ -41,8 +43,17 @@ public class MicropostsApiController {
             @RequestParam("micropost[content]") String content,
             @RequestPart(value = "picture", required = false) MultipartFile picture
     ) throws IOException {
-        Micropost micropost = micropostService.create(currentUser.getId(), content, picture);
-        return ResponseEntity.ok(micropost);
+        try {
+            Micropost micropost = micropostService.create(currentUser.getId(), content, picture);
+
+            if (micropost == null || micropost.getId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", List.of("Failed to create micropost")));
+            }
+
+            return ResponseEntity.ok().body(Map.of("flash", List.of("success", "Micropost created!")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", List.of(e.getMessage())));
+        }
     }
 
     @DeleteMapping("/{id}")

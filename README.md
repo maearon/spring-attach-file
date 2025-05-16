@@ -1,6 +1,6 @@
 ### Spring Implementation of Rails Tutorial Sample App
 
-I'll create a Spring Boot application that replicates the functionality of the Ruby on Rails tutorial sample app. Let's start by setting up the Spring project structure and implementing the core features.
+I'll create a Spring Boot application that replicates(coppy) the functionality of the Ruby on Rails tutorial sample app. Let's start by setting up the Spring project structure and implementing the core features.
 ```
 spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 spring.datasource.url=jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
