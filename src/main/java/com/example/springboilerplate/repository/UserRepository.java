@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     Optional<User> findByActivationDigest(String activationDigest);
     Optional<User> findByResetDigest(String resetDigest);
+    Optional<User> findByRefreshToken(String refreshToken);
     
     @Query("SELECT u FROM User u WHERE u.id IN (SELECT r.followed.id FROM Relationship r WHERE r.follower.id = :userId)")
     List<User> findFollowing(@Param("userId") Long userId);

@@ -1,6 +1,7 @@
 package com.example.springboilerplate.controller.api;
 
 import com.example.springboilerplate.model.User;
+import com.example.springboilerplate.security.UserPrincipal;
 import com.example.springboilerplate.service.RelationshipService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public class RelationshipsApiController {
     private final RelationshipService relationshipService;
 
     @PostMapping("/{id}/follow")
-    public ResponseEntity<?> follow(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<?> follow(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal currentUser) {
         relationshipService.follow(currentUser.getId(), id);
-        return ResponseEntity.ok(Map.of("status", "success", "message", "User followed successfully"));
+        return ResponseEntity.ok(Map.of("follow", "success", "message", "User followed successfully"));
     }
 
     @DeleteMapping("/{id}/unfollow")
-    public ResponseEntity<?> unfollow(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<?> unfollow(@PathVariable Long id, @AuthenticationPrincipal UserPrincipal currentUser) {
         relationshipService.unfollow(currentUser.getId(), id);
-        return ResponseEntity.ok(Map.of("status", "success", "message", "User unfollowed successfully"));
+        return ResponseEntity.ok(Map.of("unfollow", "success", "message", "User unfollowed successfully"));
     }
 }

@@ -1,3 +1,8 @@
 2025-05-16 00:06:27.398711+07:00 jdbc[113]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * [*]FROMMICROPOSTS"; SQL statement:
 SELECT * FROMMICROPOSTS [42000-232]
+2025-05-17 08:25:57.815911+07:00 jdbc[64]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE users\000d\000aADD COLUMN refresh_token VARCHAR(255)[*],\000d\000aADD COLUMN refresh_token_expiration_at TIMESTAMP"; SQL statement:
+ALTER TABLE users
+ADD COLUMN refresh_token VARCHAR(255),
+ADD COLUMN refresh_token_expiration_at TIMESTAMP [42000-232]

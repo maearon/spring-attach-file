@@ -127,7 +127,7 @@ const Show = ({ params }: { params: { id: string } }) => {
       </aside>
 
       <div className="col-md-8">
-        {currentUser && currentUser.value.id !== id && (
+        {currentUser && String(currentUser.value.id) !== String(id) && (
           <FollowForm
             id={id}
             user={user}
@@ -152,7 +152,7 @@ const Show = ({ params }: { params: { id: string } }) => {
                     />
                   </Link>
                   <span className="user">
-                    <Link href={`/users/${micropost.user_id}`}>{user.name}</Link>
+                    <Link href={`/users/${user.id}`}>{user.name}</Link>
                   </span>
                   <span className="content">
                     {micropost.content}
@@ -168,7 +168,7 @@ const Show = ({ params }: { params: { id: string } }) => {
                   </span>
                   <span className="timestamp">
                     {`Posted ${micropost.timestamp} ago. `}
-                    {currentUser.value.id === micropost.user_id && (
+                    {String(currentUser.value.id) === String(micropost.user_id) && (
                       <Link href={`#/microposts/${micropost.id}`} onClick={() => removeMicropost(micropost.id)}>
                         delete
                       </Link>

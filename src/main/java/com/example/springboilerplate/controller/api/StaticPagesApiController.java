@@ -22,6 +22,10 @@ public class StaticPagesApiController {
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestParam(defaultValue = "0") int page
     ) {
+        // if (currentUser == null) {
+        //     return ResponseEntity.status(401).body("Unauthorized");
+        // }
+
         int safePage = Math.max(0, page - 1);
         return ResponseEntity.ok(
                 micropostService.getFeed(currentUser.getId(), PageRequest.of(safePage, 5))

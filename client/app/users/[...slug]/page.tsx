@@ -125,7 +125,7 @@ const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
           />
           <Link href={'/users/'+u.id}>{u.name}</Link>
           {
-            current_user.value.role && current_user.value.id !== u.id ? (
+            current_user.value.admin && String(current_user.value.id) !== String(u.id) ? (
               <>
               | <Link href={'#/users/'+u.id} onClick={() => removeUser(u.id)}>delete</Link>
               </>

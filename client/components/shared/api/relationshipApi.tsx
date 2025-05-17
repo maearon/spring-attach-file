@@ -14,12 +14,12 @@ export interface DestroyResponse {
 
 const relationshipApi = {
   create(params: CreateParams): Promise<CreateResponse> {
-    const url = '/relationships';
+    const url = `/relationships/${params.followed_id}/follow`;
     return API.post(url, params);
   },
 
   destroy(id: string): Promise<DestroyResponse> {
-    const url = `/relationships/${id}`;
+    const url = `/relationships/${id}/unfollow`;
     return API.delete(url);
   },
 };

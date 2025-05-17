@@ -6,7 +6,7 @@ export interface User {
   readonly id: string
   email: string
   name: string
-  role: boolean
+  admin: boolean
   avatar?: string
 }
 

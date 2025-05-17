@@ -57,6 +57,12 @@ public class User implements UserDetails {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "refresh_token_expiration_at")
+    private LocalDateTime refreshTokenExpirationAt;
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

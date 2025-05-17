@@ -342,7 +342,7 @@ const Home: NextPage = () => {
         <ol className="microposts">
           { feedItems.map((i:any, t) => (
               <li key={t} id= {'micropost-'+i.id} >
-                <Link href={'/users/'+i.user_id}>
+                <Link href={'/users/'+i.user.id}>
                   <Image
                     className={"gravatar"}
                     src={getGravatarUrl(i.user.email, 50)}
@@ -352,7 +352,7 @@ const Home: NextPage = () => {
                     priority
                   />
                 </Link>
-                <span className="user"><Link href={'/users/'+i.user_id}>{i.user_name}</Link></span>
+                <span className="user"><Link href={'/users/'+i.user.id}>{i.user.name}</Link></span>
                 
                 <span className="content">
                   <b>{i.title}</b>
@@ -381,7 +381,7 @@ const Home: NextPage = () => {
                 </span>
                 <span className="timestamp">
                 {'Shared '+i.timestamp+' ago. '}
-                {userData.value.id === i.user.id &&
+                {String(userData.value.id) === String(i.user.id) &&
                   <Link href={'#/microposts/'+i.id} onClick={() => removeMicropost(i.id)}>delete</Link>
                 }
                 </span>

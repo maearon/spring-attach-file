@@ -84,7 +84,7 @@ const Index: NextPage = () => {
         />
         <a href={'/users/'+u.id}>{u.name}</a>
         {
-          current_user.value.role && current_user.value.id !== u.id ? (
+          current_user.value.admin && String(current_user.value.id) !== String(u.id) ? (
             <>
             | <a href={'#/users/'+u.id} onClick={() => removeUser(i, u.id)}>delete</a>
             </>

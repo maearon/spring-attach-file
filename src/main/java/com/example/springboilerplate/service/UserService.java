@@ -165,4 +165,12 @@ public class UserService {
         user.setActivationDigest(UUID.randomUUID().toString());
         return userRepository.save(user); // Assuming userRepository is already defined
     }
+
+    public void revokeRefreshToken(Long userId) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setRefreshToken(null);
+            user.setRefreshTokenExpirationAt(null);
+            userRepository.save(user);
+        });
+    }
 }
