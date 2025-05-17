@@ -7,13 +7,22 @@ export interface ListParams {
   [key: string]: any
 }
 
-export interface ListResponse<Micropost> {
-  content: Micropost[]
+export interface ListResponse<Page> {
+  feedItems: MicropostPage
   followers: number
   following: number
   gravatar: string
   micropost: number
   totalElements: number
+}
+
+// Page interface mô phỏng Spring's Page<Micropost>
+export interface MicropostPage {
+  content: Micropost[]
+  totalElements: number
+  totalPages?: number
+  size?: number
+  number?: number
 }
 
 export interface Micropost {

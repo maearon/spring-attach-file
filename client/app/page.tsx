@@ -76,9 +76,9 @@ const Home: NextPage = () => {
   const setFeeds = useCallback(async () => { 
     micropostApi.getAll({page: page}
     ).then(async (response: ListResponse<Micropost>) => {
-      if (response.content) {
+      if (response.feedItems.content) {
         const updatedFeedItems = await Promise.all(
-          response.content.map(async (item) => {
+          response.feedItems.content.map(async (item) => {
             const videoId = extractVideoId(item.content);
             if (videoId) {
               const details = await fetchVideoDetails(videoId);
@@ -95,7 +95,7 @@ const Home: NextPage = () => {
         setFollowers(response.followers)
         setMicropost(response.micropost)
         setGavatar(getGravatarUrl(userData.value.email, 50))
-        if (response.content.length === 0 && page > 1) {
+        if (response.feedItems.content.length === 0 && page > 1) {
           setPage(prev => prev - 1);
         }
       } else {

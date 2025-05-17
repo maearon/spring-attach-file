@@ -64,6 +64,10 @@ public class MicropostService {
         return micropostRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
     }
 
+    public int countByUser(Long userId) {
+        return micropostRepository.countByUserId(userId);
+    }
+
     public Page<MicropostResponseDto> getFeed(Long userId, Pageable pageable) {
         return micropostRepository.findFeed(userId, pageable)
                 .map(m -> new MicropostResponseDto(
