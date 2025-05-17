@@ -1,8 +1,10 @@
 package com.example.springboilerplate.controller.api;
 
 import com.example.springboilerplate.dto.ApiResponse;
+import com.example.springboilerplate.dto.FollowingResponseDto;
 import com.example.springboilerplate.dto.MicropostResponseDto;
 import com.example.springboilerplate.dto.ShowResponseDto;
+import com.example.springboilerplate.dto.UserDetailDto;
 import com.example.springboilerplate.dto.UserDto;
 import com.example.springboilerplate.dto.UserShowDto;
 import com.example.springboilerplate.dto.UserSummaryDto;
@@ -198,12 +200,118 @@ public class UsersApiController {
 
     @GetMapping("/{id}/following")
     public ResponseEntity<?> following(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(userService.getFollowingPaginated(id, PageRequest.of(page, 10)));
+        // if (currentUser == null) {
+        //     return ResponseEntity.status(401).body("Unauthorized");
+        // }
+
+        Optional<User> optionalUser = userService.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        int safePage = Math.max(0, page - 1);
+        Page<UsersResponseDto> followingPage = userService.getFollowingPaginated(id, PageRequest.of(safePage, 5));
+        // List<User> xusers = userService.getXUsers(); // ví dụ: gợi ý bạn bè, người nổi bật, v.v.
+
+        List<UserSummaryDto> users = followingPage.stream().map(u ->
+            new UserSummaryDto(
+                u.getId(),
+                u.getName(),
+                u.getEmail()
+                // md5Hex(u.getEmail().toLowerCase()),
+                // 50
+            )
+        ).toList();
+
+        List<UserSummaryDto> xuserDtos = followingPage.stream().map(u ->
+            new UserSummaryDto(
+                u.getId(),
+                u.getName(),
+                u.getEmail()
+                // md5Hex(u.getEmail().toLowerCase()),
+                // 30
+            )
+        ).toList();
+
+        UserDetailDto userDto = new UserDetailDto(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getFollowing().size(),
+            user.getFollowers().size(),
+            user.getMicroposts().size()
+            // md5Hex(user.getEmail().toLowerCase())
+        );
+
+        FollowingResponseDto response = new FollowingResponseDto(
+            users,
+            (int) followingPage.getTotalElements(),
+            xuserDtos,
+            userDto
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/followers")
     public ResponseEntity<?> followers(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
-        return ResponseEntity.ok(userService.getFollowersPaginated(id, PageRequest.of(page, 10)));
+        // if (currentUser == null) {
+        //     return ResponseEntity.status(401).body("Unauthorized");
+        // }
+
+        Optional<User> optionalUser = userService.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = optionalUser.get();
+
+        int safePage = Math.max(0, page - 1);
+        Page<UsersResponseDto> followersPage = userService.getFollowersPaginated(id, PageRequest.of(safePage, 5));
+        // List<User> xusers = userService.getXUsers(); // ví dụ: gợi ý bạn bè, người nổi bật, v.v.
+
+        List<UserSummaryDto> users = followersPage.stream().map(u ->
+            new UserSummaryDto(
+                u.getId(),
+                u.getName(),
+                u.getEmail()
+                // md5Hex(u.getEmail().toLowerCase()),
+                // 50
+            )
+        ).toList();
+
+        List<UserSummaryDto> xuserDtos = followersPage.stream().map(u ->
+            new UserSummaryDto(
+                u.getId(),
+                u.getName(),
+                u.getEmail()
+                // md5Hex(u.getEmail().toLowerCase()),
+                // 30
+            )
+        ).toList();
+
+        UserDetailDto userDto = new UserDetailDto(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getFollowing().size(),
+            user.getFollowers().size(),
+            user.getMicroposts().size()
+            // md5Hex(user.getEmail().toLowerCase())
+        );
+
+        FollowingResponseDto response = new FollowingResponseDto(
+            users,
+            (int) followersPage.getTotalElements(),
+            xuserDtos,
+            userDto
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

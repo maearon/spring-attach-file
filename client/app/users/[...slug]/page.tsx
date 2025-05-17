@@ -7,6 +7,7 @@ import { selectUser } from '../../../redux/session/sessionSlice'
 import userApi, { IUserFollow, UserFollow } from '../../../components/shared/api/userApi'
 import flashMessage from '../../../components/shared/flashMessages'
 import Pagination from 'react-js-pagination'
+import { getGravatarUrl } from "@/utils/gravatar";
 
 const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
   const [users, setUsers] = useState([] as UserFollow[])
@@ -22,7 +23,7 @@ const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
     ).then(response => {
       setUsers(response.users)
       setXusers(response.xusers)
-      setTotalCount(response.total_count)
+      setTotalCount(response.totalElements)
       setUser(response.user)
     })
     .catch((error: any) => {
@@ -62,25 +63,25 @@ const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
         <section className="user_info">
           <Image
             className={"gravatar"}
-            src={"https://secure.gravatar.com/avatar/"+user.gravatar+"?s=80"}
-            alt={user.name}
+            src={getGravatarUrl(current_user.value.email, 80)}
+            alt={current_user.value.name}
             width={80}
             height={80}
             priority
           />
-          <h1>{user.name}</h1>
-          <span><Link href={"/users/"+user.id}>view my profile</Link></span>
+          <h1>{current_user.value.name}</h1>
+          <span><Link href={"/users/"+current_user.value.id}>view my profile</Link></span>
           <span><b>Microposts:</b> {user.micropost}</span>
         </section>
 
         <section className="stats">
           <div className="stats">
-            <Link href={"/users/"+user.id+"/following"}>
+            <Link href={"/users/"+current_user.value.id+"/following"}>
               <strong id="following" className="stat">
                 {user.following}
               </strong> following
             </Link>
-            <Link href={"/users/"+user.id+"/followers"}>
+            <Link href={"/users/"+current_user.value.id+"/followers"}>
               <strong id="followers" className="stat">
                 {user.followers}
               </strong> followers
@@ -94,7 +95,7 @@ const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
             <Link key={i} href={'/users/'+u.id}>
               <Image
                 className={"gravatar"}
-                src={"https://secure.gravatar.com/avatar/"+u.gravatar_id+"?s=30"}
+                src={getGravatarUrl(user.email, 30)}
                 alt={u.name}
                 width={30}
                 height={30}
@@ -117,10 +118,10 @@ const ShowFollow = ({params}: {params: {slug: string[]}}) =>{
         <li key={i}>
           <Image
             className={"gravatar"}
-            src={"https://secure.gravatar.com/avatar/"+u.gravatar_id+"?s="+u.size}
+            src={getGravatarUrl(u.email, 30)}
             alt={u.name}
-            width={u.size}
-            height={u.size}
+            width={50}
+            height={50}
             priority
           />
           <Link href={'/users/'+u.id}>{u.name}</Link>

@@ -143,20 +143,22 @@ export default userApi;
 export interface UserFollow {
   readonly id: string
   name: string
-  gravatar_id: string
-  size: number
+  email: string
+  // gravatar_id: string
+  // size: number
 }
 
 export interface FollowResponse<UserFollow,IUserFollow> {
   users: UserFollow[]
   xusers: UserFollow[]
-  total_count: number
+  totalElements: number
   user: IUserFollow
 }
 
 export interface IUserFollow {
   readonly id: string
   name: string
+  email: string
   followers: number
   following: number
   gravatar: string

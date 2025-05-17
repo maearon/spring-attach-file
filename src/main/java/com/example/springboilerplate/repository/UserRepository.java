@@ -1,5 +1,6 @@
 package com.example.springboilerplate.repository;
 
+import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

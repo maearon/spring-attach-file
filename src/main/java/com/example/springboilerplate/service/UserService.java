@@ -114,13 +114,24 @@ public class UserService {
         return userRepository.findFollowers(userId);
     }
 
-    public Page<User> getFollowingPaginated(Long userId, Pageable pageable) {
-        return userRepository.findFollowingPaginated(userId, pageable);
+    public Page<UsersResponseDto> getFollowingPaginated(Long userId, Pageable pageable) {
+    return userRepository.findFollowingPaginated(userId, pageable)
+            .map(m -> new UsersResponseDto(
+                    m.getId(),
+                    m.getName(),
+                    m.getEmail()
+            ));
     }
 
-    public Page<User> getFollowersPaginated(Long userId, Pageable pageable) {
-        return userRepository.findFollowersPaginated(userId, pageable);
+    public Page<UsersResponseDto> getFollowersPaginated(Long userId, Pageable pageable) {
+        return userRepository.findFollowersPaginated(userId, pageable)
+                .map(m -> new UsersResponseDto(
+                        m.getId(),
+                        m.getName(),
+                        m.getEmail()
+                ));
     }
+
 
     // Add this method to the UserService class
     public User updateUser(Long id, String name, String email, String password) {
