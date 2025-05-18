@@ -63,6 +63,15 @@ const New: NextPage = () => {
   })
 
   const onSubmit = (values: MyFormValues) => {
+    // Always clear local and session storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("remember_token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("remember_token");
+      sessionStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("accessToken");
     flashMessage("error", "User or password incorrect")
     sessionApi.create(
       {

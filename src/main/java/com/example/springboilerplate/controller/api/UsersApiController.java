@@ -25,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,88 +56,8 @@ public class UsersApiController {
         return ResponseEntity.ok(userService.findAll(PageRequest.of(safePage, 5)));
     }
 
-    // @GetMapping("/{id}")
-    // public ResponseEntity<User> show(@PathVariable Long id) {
-    //     return userService.findById(id)
-    //             .map(ResponseEntity::ok)
-    //             .orElse(ResponseEntity.notFound().build());
-    // }
-    // @GetMapping("/{id}")
-    // public String show(@PathVariable Long id, Model model, @AuthenticationPrincipal UserPrincipal currentUser) {
-    //     return userService.findById(id).map(user -> {
-    //         model.addAttribute("user", user);
-    //         Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
-    //         model.addAttribute("microposts", microposts);
-            
-    //         if (currentUser != null) {
-    //             model.addAttribute("following", relationshipService.isFollowing(currentUser.getId(), id));
-    //         }
-            
-    //         model.addAttribute("followingCount", relationshipService.countFollowing(id));
-    //         model.addAttribute("followersCount", relationshipService.countFollowers(id));
-            
-    //         return "users/show";
-    //     }).orElse("redirect:/");
-    // }
-    // @GetMapping("/{id}")
-    // public ResponseEntity<?> show(@PathVariable Long id,
-    //                             @AuthenticationPrincipal UserPrincipal currentUser) {
-
-    //     return userService.findById(id).map(user -> {
-    //         // Lấy danh sách microposts
-    //         Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
-
-    //         // Đếm follow
-    //         long followingCount = relationshipService.countFollowing(id);
-    //         long followersCount = relationshipService.countFollowers(id);
-
-    //         // Kiểm tra current user có đang follow không
-    //         boolean isFollowing = false;
-    //         Long idRelationship = null;
-    //         if (currentUser != null) {
-    //             isFollowing = relationshipService.isFollowing(currentUser.getId(), id);
-    //             idRelationship = relationshipService.findRelationshipId(currentUser.getId(), id)
-    //                                                 .orElse(null); // thêm hàm này trong service
-    //         }
-
-    //         // Build UserShowDto
-    //         UserShowDto userDto = new UserShowDto(
-    //                 user.getId(),
-    //                 user.getName(),
-    //                 user.getEmail(),
-    //                 followingCount,
-    //                 followersCount,
-    //                 isFollowing
-    //         );
-
-    //         // Build danh sách MicropostResponseDto
-    //         List<MicropostResponseDto> micropostDtos = microposts.getContent().stream().map(m -> {
-    //             String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
-    //             return new MicropostResponseDto(
-    //                     m.getId(),
-    //                     m.getContent(),
-    //                     m.getCreatedAt(),
-    //                     new UserSummaryDto(
-    //                             m.getUser().getId(),
-    //                             m.getUser().getName(),
-    //                             m.getUser().getEmail()
-    //                     )
-    //             );
-    //         }).toList();
-
-    //         // Trả về response DTO
-    //         ShowResponseDto response = new ShowResponseDto(
-    //                 idRelationship,
-    //                 micropostDtos,
-    //                 microposts.getTotalElements(),
-    //                 userDto
-    //         );
-
-    //         return ResponseEntity.ok(response);
-    //     }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"));
-    // }
     @GetMapping("/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id,
+    public ResponseEntity<?> show(@PathVariable String id,
                                 @AuthenticationPrincipal UserPrincipal currentUser) {
 
         Optional<User> optionalUser = userService.findById(id);
@@ -149,14 +68,14 @@ public class UsersApiController {
 
         User user = optionalUser.get();
 
-        // Lấy danh sách microposts
+        // Get microposts list
         Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 5));
 
         // Đếm follow
         long followingCount = relationshipService.countFollowing(id);
         long followersCount = relationshipService.countFollowers(id);
 
-        // Kiểm tra current user có đang follow không
+        // Check is current user following
         boolean isFollowing = false;
         Long idRelationship = null;
         if (currentUser != null) {
@@ -199,7 +118,7 @@ public class UsersApiController {
     }
 
     @GetMapping("/{id}/following")
-    public ResponseEntity<?> following(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<?> following(@PathVariable String id, @RequestParam(defaultValue = "0") int page) {
         // if (currentUser == null) {
         //     return ResponseEntity.status(401).body("Unauthorized");
         // }
@@ -257,7 +176,7 @@ public class UsersApiController {
     }
 
     @GetMapping("/{id}/followers")
-    public ResponseEntity<?> followers(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<?> followers(@PathVariable String id, @RequestParam(defaultValue = "0") int page) {
         // if (currentUser == null) {
         //     return ResponseEntity.status(401).body("Unauthorized");
         // }
@@ -315,7 +234,7 @@ public class UsersApiController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, 
+    public ResponseEntity<?> update(@PathVariable String id, 
                                    @Valid @RequestBody UserDto userDto,
                                    @AuthenticationPrincipal User currentUser) {
         if (!currentUser.getId().equals(id) && !currentUser.isAdmin()) {
@@ -327,7 +246,7 @@ public class UsersApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<?> destroy(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
         if (!currentUser.isAdmin()) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to delete users"));
         }

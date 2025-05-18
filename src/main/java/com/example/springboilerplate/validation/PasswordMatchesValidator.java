@@ -15,7 +15,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
         try {
-            Field passwordField = obj.getClass().getDeclaredField("password");
+            Field passwordField = obj.getClass().getDeclaredField("password_digest");
             Field matchingPasswordField = obj.getClass().getDeclaredField("matchingPassword");
             
             passwordField.setAccessible(true);

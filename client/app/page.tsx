@@ -32,6 +32,7 @@ const Home: NextPage = () => {
   const [image, setImage] = useState(null)
   const [imageName, setImageName] = useState('')
   const inputEl = useRef() as MutableRefObject<HTMLInputElement>
+  const inputImage = useRef() as MutableRefObject<HTMLInputElement>
   const [errors, setErrors] = useState<ErrorMessageType>({});
   const userData = useAppSelector(selectUser)
   const dispatch = useDispatch()
@@ -199,6 +200,20 @@ const Home: NextPage = () => {
     setContent(e.target.value)
   }
 
+  const handleImageInput = (e: any) => {
+    if (e.target.files[0]) {
+      const size_in_megabytes = e.target.files[0].size/1024/1024
+      if (size_in_megabytes > 512) {
+        alert("Maximum file size is 512MB. Please choose a smaller file.")
+        setImage(null)
+        e.target.value = null
+      } else {
+        setImage(e.target.files[0])
+        setImageName(e.target.files[0].name)
+      }
+    }
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault()
     if (content.trim().length > 0){
@@ -332,6 +347,16 @@ const Home: NextPage = () => {
                 </textarea>
             </div>
             <input ref={inputEl} type="submit" name="commit" value="Share" className="btn btn-primary" data-disable-with="Post" />
+            <span className="image">
+              <input
+              ref={inputImage}
+              accept="image/jpeg,image/gif,image/png"
+              type="file"
+              name="micropost[image]"
+              id="micropost_image"
+              onChange={handleImageInput}
+              />
+            </span>
           </form>
         </section>
       </aside>

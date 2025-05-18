@@ -12,13 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponseDto {
-    // private String accessToken;
-    // @Builder.Default
-    // private String tokenType = "Bearer";
-    // private Long id;
-    // private String name;
-    // private String email;
-    // private boolean admin;
     private UserDto user;
     private TokenGroupDto tokens;
 
@@ -27,12 +20,10 @@ public class JwtResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UserDto {
-        private Long id;
+        private String id;
         private String email;
         private String name;
         private boolean admin;
-        // private String passwordHash;
-        // private String token;
     }
 
     @Data

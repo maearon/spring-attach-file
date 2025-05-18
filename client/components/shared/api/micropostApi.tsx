@@ -1,6 +1,7 @@
 // import { ListParams, ListResponse, Student } from 'models';
 import API from '.';
 import { ErrorMessageType } from '../errorMessages';
+import { User as UserMicropost } from '../../../redux/session/sessionSlice';
 
 export interface ListParams {
   page?: number
@@ -38,6 +39,7 @@ export interface Micropost {
   description?: string
   videoId?: string
   channelTitle?: string
+  user?: UserMicropost
 }
 
 // export interface CreateParams {

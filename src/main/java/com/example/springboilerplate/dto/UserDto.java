@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @PasswordMatches
 public class UserDto {
-    private Long id;
+    private String id;
 
     @NotNull
     @NotEmpty

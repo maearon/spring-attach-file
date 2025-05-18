@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface RelationshipRepository extends JpaRepository<Relationship, Long> {
-    Optional<Relationship> findByFollowerIdAndFollowedId(Long followerId, Long followedId);
-    int countByFollowerId(Long followerId);
-    int countByFollowedId(Long followedId);
-    boolean existsByFollowerIdAndFollowedId(Long followerId, Long followedId);
+public interface RelationshipRepository extends JpaRepository<Relationship, String> {
+    Optional<Relationship> findByFollowerIdAndFollowedId(String followerId, String followedId);
+    int countByFollowerId(String followerId);
+    int countByFollowedId(String followedId);
+    boolean existsByFollowerIdAndFollowedId(String followerId, String followedId);
 }

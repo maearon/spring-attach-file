@@ -34,7 +34,7 @@ public class JwtTokenProvider {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key)
@@ -50,21 +50,21 @@ public class JwtTokenProvider {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getId())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret.getBytes())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String getUserIdFromJWT(String token) {
+    Claims claims = Jwts.parserBuilder()
+            .setSigningKey(jwtSecret.getBytes())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject(); // ✅ trả về String
     }
 
     public Instant getExpirationFromToken(String token) {

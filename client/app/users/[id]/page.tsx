@@ -168,7 +168,7 @@ const Show = ({ params }: { params: { id: string } }) => {
                   </span>
                   <span className="timestamp">
                     {`Posted ${micropost.timestamp} ago. `}
-                    {String(currentUser.value.id) === String(micropost.user_id) && (
+                    {String(currentUser.value.id) === String(micropost.user?.id) && (
                       <Link href={`#/microposts/${micropost.id}`} onClick={() => removeMicropost(micropost.id)}>
                         delete
                       </Link>

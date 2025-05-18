@@ -18,7 +18,7 @@ public class RelationshipsController {
     private final RelationshipService relationshipService;
 
     @PostMapping("/{id}/follow")
-    public String follow(@PathVariable Long id, @AuthenticationPrincipal User currentUser,
+    public String follow(@PathVariable String id, @AuthenticationPrincipal User currentUser,
                          RedirectAttributes redirectAttributes) {
         relationshipService.follow(currentUser.getId(), id);
         redirectAttributes.addFlashAttribute("success", "You are now following this user.");
@@ -26,7 +26,7 @@ public class RelationshipsController {
     }
 
     @PostMapping("/{id}/unfollow")
-    public String unfollow(@PathVariable Long id, @AuthenticationPrincipal User currentUser,
+    public String unfollow(@PathVariable String id, @AuthenticationPrincipal User currentUser,
                            RedirectAttributes redirectAttributes) {
         relationshipService.unfollow(currentUser.getId(), id);
         redirectAttributes.addFlashAttribute("success", "You have unfollowed this user.");

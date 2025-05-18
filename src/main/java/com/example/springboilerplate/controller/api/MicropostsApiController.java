@@ -1,9 +1,6 @@
 package com.example.springboilerplate.controller.api;
 
-import com.example.springboilerplate.dto.ApiResponse;
-import com.example.springboilerplate.dto.MicropostDto;
 import com.example.springboilerplate.model.Micropost;
-import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.UserPrincipal;
 import com.example.springboilerplate.service.MicropostService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +37,10 @@ public class MicropostsApiController {
     public ResponseEntity<?> create(
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestParam("micropost[content]") String content,
-            @RequestPart(value = "picture", required = false) MultipartFile picture
+            @RequestParam("micropost[image]") MultipartFile image
     ) throws IOException {
         try {
-            Micropost micropost = micropostService.create(currentUser.getId(), content, picture);
+            Micropost micropost = micropostService.create(currentUser.getId(), content, image);
 
             if (micropost == null || micropost.getId() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", List.of("Failed to create micropost")));

@@ -18,8 +18,8 @@ import java.util.*;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @NotBlank
     @Size(min = 3, max = 50)
@@ -33,7 +33,7 @@ public class User implements UserDetails {
 
     @NotBlank
     @Size(min = 6)
-    @Column(nullable = false)
+    @Column(name = "password_digest", nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -45,7 +45,7 @@ public class User implements UserDetails {
     @Column(name = "activated")
     private boolean activated = false;
 
-    @Column(name = "activation_at")
+    @Column(name = "activated_at")
     private LocalDateTime activatedAt;
 
     @Column(name = "reset_digest")

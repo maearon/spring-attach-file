@@ -27,7 +27,7 @@ public class SessionResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UserDto {
-        private Long id;
+        private String id;
         private String email;
         private String name;
         private boolean admin;

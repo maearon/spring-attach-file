@@ -30,7 +30,7 @@ public class MicropostService {
     private final Path uploadPath = Paths.get("uploads");
 
     @Transactional
-    public Micropost create(Long userId, String content, MultipartFile picture) throws IOException {
+    public Micropost create(String userId, String content, MultipartFile picture) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -56,19 +56,19 @@ public class MicropostService {
         return micropostRepository.findById(id);
     }
 
-    public List<Micropost> findByUserId(Long userId) {
+    public List<Micropost> findByUserId(String userId) {
         return micropostRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
-    public Page<Micropost> findByUserId(Long userId, Pageable pageable) {
+    public Page<Micropost> findByUserId(String userId, Pageable pageable) {
         return micropostRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
     }
 
-    public int countByUser(Long userId) {
+    public int countByUser(String userId) {
         return micropostRepository.countByUserId(userId);
     }
 
-    public Page<MicropostResponseDto> getFeed(Long userId, Pageable pageable) {
+    public Page<MicropostResponseDto> getFeed(String userId, Pageable pageable) {
         return micropostRepository.findFeed(userId, pageable)
                 .map(m -> new MicropostResponseDto(
                         m.getId(),
@@ -83,7 +83,7 @@ public class MicropostService {
     }
 
     @Transactional
-    public boolean delete(Long id, Long userId) {
+    public boolean delete(Long id, String userId) {
         Optional<Micropost> micropostOpt = micropostRepository.findById(id);
         if (micropostOpt.isPresent()) {
             Micropost micropost = micropostOpt.get();

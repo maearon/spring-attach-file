@@ -35,7 +35,7 @@ public class UsersController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable Long id, Model model, @AuthenticationPrincipal User currentUser) {
+    public String show(@PathVariable String id, Model model, @AuthenticationPrincipal User currentUser) {
         return userService.findById(id).map(user -> {
             model.addAttribute("user", user);
             Page<Micropost> microposts = micropostService.findByUserId(id, PageRequest.of(0, 10));
@@ -70,7 +70,7 @@ public class UsersController {
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable String id, Model model) {
         return userService.findById(id).map(user -> {
             model.addAttribute("user", user);
             return "users/edit";
@@ -79,7 +79,7 @@ public class UsersController {
 
     @PostMapping("/{id}")
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute User user, BindingResult result) {
+    public String update(@PathVariable String id, @Valid @ModelAttribute User user, BindingResult result) {
         if (result.hasErrors()) {
             return "users/edit";
         }
@@ -97,13 +97,13 @@ public class UsersController {
 
     @PostMapping("/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable String id) {
         userService.delete(id);
         return "redirect:/users";
     }
 
     @GetMapping("/{id}/following")
-    public String following(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page) {
+    public String following(@PathVariable String id, Model model, @RequestParam(defaultValue = "0") int page) {
         return userService.findById(id).map(user -> {
             model.addAttribute("user", user);
             model.addAttribute("users", userService.getFollowingPaginated(id, PageRequest.of(page, 10)));
@@ -115,7 +115,7 @@ public class UsersController {
     }
 
     @GetMapping("/{id}/followers")
-    public String followers(@PathVariable Long id, Model model, @RequestParam(defaultValue = "0") int page) {
+    public String followers(@PathVariable String id, Model model, @RequestParam(defaultValue = "0") int page) {
         return userService.findById(id).map(user -> {
             model.addAttribute("user", user);
             model.addAttribute("users", userService.getFollowersPaginated(id, PageRequest.of(page, 10)));

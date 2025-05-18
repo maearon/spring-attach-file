@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     Optional<User> findByActivationDigest(String activationDigest);
@@ -19,14 +19,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByRefreshToken(String refreshToken);
     
     @Query("SELECT u FROM User u WHERE u.id IN (SELECT r.followed.id FROM Relationship r WHERE r.follower.id = :userId)")
-    List<User> findFollowing(@Param("userId") Long userId);
+    List<User> findFollowing(@Param("userId") String userId);
     
     @Query("SELECT u FROM User u WHERE u.id IN (SELECT r.follower.id FROM Relationship r WHERE r.followed.id = :userId)")
-    List<User> findFollowers(@Param("userId") Long userId);
+    List<User> findFollowers(@Param("userId") String userId);
     
     @Query("SELECT u FROM User u WHERE u.id IN (SELECT r.followed.id FROM Relationship r WHERE r.follower.id = :userId)")
-    Page<User> findFollowingPaginated(@Param("userId") Long userId, Pageable pageable);
+    Page<User> findFollowingPaginated(@Param("userId") String userId, Pageable pageable);
     
     @Query("SELECT u FROM User u WHERE u.id IN (SELECT r.follower.id FROM Relationship r WHERE r.followed.id = :userId)")
-    Page<User> findFollowersPaginated(@Param("userId") Long userId, Pageable pageable);
+    Page<User> findFollowersPaginated(@Param("userId") String userId, Pageable pageable);
 }

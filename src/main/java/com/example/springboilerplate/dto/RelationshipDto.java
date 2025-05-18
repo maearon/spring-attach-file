@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RelationshipDto {
     private Long id;
-    private Long followerId;
-    private Long followedId;
+    private String followerId;
+    private String followedId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -1,7 +1,5 @@
 package com.example.springboilerplate.service;
 
-import com.example.springboilerplate.dto.MicropostResponseDto;
-import com.example.springboilerplate.dto.UserSummaryDto;
 import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.UserRepository;
@@ -37,7 +35,7 @@ public class UserService {
                 ));
     }
 
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(String id) {
         return userRepository.findById(id);
     }
 
@@ -64,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(String id) {
         userRepository.deleteById(id);
     }
 
@@ -106,15 +104,15 @@ public class UserService {
         return false;
     }
 
-    public List<User> getFollowing(Long userId) {
+    public List<User> getFollowing(String userId) {
         return userRepository.findFollowing(userId);
     }
 
-    public List<User> getFollowers(Long userId) {
+    public List<User> getFollowers(String userId) {
         return userRepository.findFollowers(userId);
     }
 
-    public Page<UsersResponseDto> getFollowingPaginated(Long userId, Pageable pageable) {
+    public Page<UsersResponseDto> getFollowingPaginated(String userId, Pageable pageable) {
     return userRepository.findFollowingPaginated(userId, pageable)
             .map(m -> new UsersResponseDto(
                     m.getId(),
@@ -123,7 +121,7 @@ public class UserService {
             ));
     }
 
-    public Page<UsersResponseDto> getFollowersPaginated(Long userId, Pageable pageable) {
+    public Page<UsersResponseDto> getFollowersPaginated(String userId, Pageable pageable) {
         return userRepository.findFollowersPaginated(userId, pageable)
                 .map(m -> new UsersResponseDto(
                         m.getId(),
@@ -134,7 +132,7 @@ public class UserService {
 
 
     // Add this method to the UserService class
-    public User updateUser(Long id, String name, String email, String password) {
+    public User updateUser(String id, String name, String email, String password) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setName(name);
@@ -146,7 +144,7 @@ public class UserService {
     }
 
     // Other methods in UserService
-    public boolean deleteUser(Long id) {
+    public boolean deleteUser(String id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             userRepository.delete(user.get());
@@ -170,6 +168,7 @@ public class UserService {
         // emailService.sendActivationEmail(savedUser);
         // return savedUser;
         User user = new User();
+        user.setId(UUID.randomUUID().toString());
         user.setName(name);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password)); // Ensure password is hashed before saving
@@ -177,7 +176,7 @@ public class UserService {
         return userRepository.save(user); // Assuming userRepository is already defined
     }
 
-    public void revokeRefreshToken(Long userId) {
+    public void revokeRefreshToken(String userId) {
         userRepository.findById(userId).ifPresent(user -> {
             user.setRefreshToken(null);
             user.setRefreshTokenExpirationAt(null);

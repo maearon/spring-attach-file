@@ -17,29 +17,25 @@ public class RelationshipService {
     private final RelationshipRepository relationshipRepository;
     private final UserRepository userRepository;
 
-    public Optional<Long> findRelationshipId(Long followerId, Long followedId) {
+    public Optional<Long> findRelationshipId(String followerId, String followedId) {
         return relationshipRepository.findByFollowerIdAndFollowedId(followerId, followedId)
                                     .map(Relationship::getId);
     }
 
-    // public boolean isFollowing(Long followerId, Long followedId) {
-    //     return relationshipRepository.existsByFollowerIdAndFollowedId(followerId, followedId);
-    // }
-
-    public boolean isFollowing(Long followerId, Long followedId) {
+    public boolean isFollowing(String followerId, String followedId) {
         return findRelationshipId(followerId, followedId).isPresent();
     }
 
-    public int countFollowing(Long userId) {
+    public int countFollowing(String userId) {
         return relationshipRepository.countByFollowerId(userId);
     }
 
-    public int countFollowers(Long userId) {
+    public int countFollowers(String userId) {
         return relationshipRepository.countByFollowedId(userId);
     }
 
     @Transactional
-    public void follow(Long followerId, Long followedId) {
+    public void follow(String followerId, String followedId) {
         if (!isFollowing(followerId, followedId) && !followerId.equals(followedId)) {
             Optional<User> followerOpt = userRepository.findById(followerId);
             Optional<User> followedOpt = userRepository.findById(followedId);
@@ -54,7 +50,7 @@ public class RelationshipService {
     }
 
     @Transactional
-    public void unfollow(Long followerId, Long followedId) {
+    public void unfollow(String followerId, String followedId) {
         Optional<Relationship> relationshipOpt = relationshipRepository.findByFollowerIdAndFollowedId(followerId, followedId);
         relationshipOpt.ifPresent(relationshipRepository::delete);
     }
