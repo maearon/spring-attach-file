@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.hibernate:hibernate-core:6.4.4.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -46,4 +47,11 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Task generateSchema: export schema.sql từ JPA/Hibernate entity
+tasks.register('generateSchema', JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass.set('org.hibernate.tool.schema.Target')
+	args = ['--output', 'schema.sql']
 }
