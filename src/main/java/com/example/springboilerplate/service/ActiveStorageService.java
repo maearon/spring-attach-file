@@ -22,6 +22,7 @@ public class ActiveStorageService {
     private final ActiveStorageBlobRepository blobRepository;
     private final ActiveStorageAttachmentRepository attachmentRepository;
     private final AttachmentRecordResolver recordResolver;
+    private final Path uploadPath = Paths.get("uploads");
 
     public void attach(MultipartFile file, String recordType, Long recordId, String name) {
         try {

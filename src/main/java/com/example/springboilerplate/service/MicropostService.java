@@ -27,8 +27,6 @@ public class MicropostService {
     private final UserRepository userRepository;
     private final ActiveStorageService attachmentService;
 
-    private final Path uploadPath = Paths.get("uploads");
-
     @Transactional
     public Micropost create(String userId, String content, MultipartFile[] images) throws IOException {
         User user = userRepository.findById(userId)
