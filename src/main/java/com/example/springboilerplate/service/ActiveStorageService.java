@@ -21,6 +21,7 @@ public class ActiveStorageService {
 
     private final ActiveStorageBlobRepository blobRepository;
     private final ActiveStorageAttachmentRepository attachmentRepository;
+    private final AttachmentRecordResolver recordResolver;
 
     public void attach(MultipartFile file, String recordType, Long recordId, String name) {
         try {
@@ -32,8 +33,9 @@ public class ActiveStorageService {
             // Lưu blob
             ActiveStorageBlob blob = new ActiveStorageBlob();
             blob.setKey(key);
-            blob.setFilename(file.getOriginalFilename());
+            blob.setFilename(file.getOriginalFilename()); // 7358dce9-6619-444e-a92f-79b03e3381f8.jpeg
             blob.setContentType(file.getContentType());
+            // {"identified": true,"width": 347,"height": 351,"analyzed": true}
             blob.setByteSize(file.getSize());
             blob.setChecksum(Base64.getEncoder().encodeToString(file.getBytes())); // có thể hash SHA256 thay thế
             blobRepository.save(blob);
@@ -49,6 +51,15 @@ public class ActiveStorageService {
         } catch (IOException e) {
             throw new RuntimeException("Upload failed", e);
         }
+    }
+
+    public List<String> findAttachments(String recordType, Long recordId, String name) {
+    List<ActiveStorageAttachment> attachments = attachmentRepository
+        .findByRecordTypeAndRecordIdAndName(recordType, recordId, name);
+
+    return attachments.stream()
+            .map(att -> "/uploads/" + att.getBlob().getKey())
+            .toList();
     }
 
     public void deleteAttachments(String recordType, Long recordId) {

@@ -12,6 +12,7 @@ import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.Micropost;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.security.UserPrincipal;
+import com.example.springboilerplate.service.ActiveStorageService;
 import com.example.springboilerplate.service.MicropostService;
 import com.example.springboilerplate.service.RelationshipService;
 import com.example.springboilerplate.service.UserService;
@@ -38,6 +39,7 @@ public class UsersApiController {
     private final UserService userService;
     private final MicropostService micropostService;
     private final RelationshipService relationshipService;
+    private final ActiveStorageService attachmentService;
 
     // @GetMapping
     // public ResponseEntity<Page<User>> index(@RequestParam(defaultValue = "0") int page) {
@@ -95,6 +97,7 @@ public class UsersApiController {
 
         List<MicropostResponseDto> micropostDtos = microposts.getContent().stream().map(m -> {
             String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
+            List<String> imageUrls = attachmentService.findAttachments("Micropost", m.getId(), "images");
             return new MicropostResponseDto(
                     m.getId(),
                     m.getContent(),
@@ -103,7 +106,8 @@ public class UsersApiController {
                             m.getUser().getId(),
                             m.getUser().getName(),
                             m.getUser().getEmail()
-                    )
+                    ),
+                    imageUrls // <-- thêm dòng này
             );
         }).toList();
 

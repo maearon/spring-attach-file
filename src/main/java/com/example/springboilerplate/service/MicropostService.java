@@ -34,10 +34,22 @@ public class MicropostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // 1. Tạo micropost entity
         Micropost micropost = new Micropost();
+
         micropost.setUser(user);
         micropost.setContent(content);
+
+        // 2. Lưu micropost vào DB để có id
         micropostRepository.save(micropost);
+                
+        if (images != null) {
+            for (MultipartFile file : images) {
+                attachmentService.attach(file, "Micropost", micropost.getId(), "images");
+            }
+        }
+        
+        
 
         // if (picture != null && !picture.isEmpty()) {
         //     String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
@@ -46,11 +58,7 @@ public class MicropostService {
         //     micropost.setPicture(filename);
         // }
 
-        if (images != null) {
-            for (MultipartFile file : images) {
-                attachmentService.attach(file, "Micropost", micropost.getId(), "images");
-            }
-        }
+       
 
         return micropost;
     }
@@ -77,16 +85,21 @@ public class MicropostService {
 
     public Page<MicropostResponseDto> getFeed(String userId, Pageable pageable) {
         return micropostRepository.findFeed(userId, pageable)
-                .map(m -> new MicropostResponseDto(
-                        m.getId(),
-                        m.getContent(),
-                        m.getCreatedAt(),
-                        new UserSummaryDto(
-                                m.getUser().getId(),
-                                m.getUser().getName(),
-                                m.getUser().getEmail()
-                        )
-                ));
+            .map(m -> {
+                List<String> imageUrls = attachmentService.findAttachments("Micropost", m.getId(), "images");
+
+                return new MicropostResponseDto(
+                    m.getId(),
+                    m.getContent(),
+                    m.getCreatedAt(),
+                    new UserSummaryDto(
+                        m.getUser().getId(),
+                        m.getUser().getName(),
+                        m.getUser().getEmail()
+                    ),
+                    imageUrls // <-- thêm dòng này
+                );
+            });
     }
 
     @Transactional
@@ -97,13 +110,13 @@ public class MicropostService {
             if (!micropost.getUser().getId().equals(userId)) {
                 return false; // không cho phép xóa nếu không phải chủ post
             }
-            if (micropost.getPicture() != null) {
-                try {
-                    Files.deleteIfExists(uploadPath.resolve(micropost.getPicture()));
-                } catch (IOException e) {
-                    // Log error nếu cần
-                }
-            }
+            // if (micropost.getPicture() != null) {
+            //     try {
+            //         Files.deleteIfExists(uploadPath.resolve(micropost.getPicture()));
+            //     } catch (IOException e) {
+            //         // Log error nếu cần
+            //     }
+            // }
             micropostRepository.deleteById(id);
             return true;
         }

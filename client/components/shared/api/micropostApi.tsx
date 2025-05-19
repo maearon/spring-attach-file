@@ -31,6 +31,7 @@ export interface Micropost {
   content: string
   gravatar_id?: string
   image: string
+  imageUrls: string[]
   size: number
   timestamp: string
   readonly user_id: string

@@ -36,8 +36,8 @@ public class Micropost {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "picture")
-    private String picture;
+    // @Column(name = "picture")
+    // private String picture;
 
     @PrePersist
     protected void onCreate() {

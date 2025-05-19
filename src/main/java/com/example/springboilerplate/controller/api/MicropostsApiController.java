@@ -1,32 +1,20 @@
 package com.example.springboilerplate.controller.api;
 
-import com.example.springboilerplate.model.ImageAttachment;
 import com.example.springboilerplate.model.Micropost;
-import com.example.springboilerplate.repository.MicropostRepository;
 import com.example.springboilerplate.security.UserPrincipal;
 import com.example.springboilerplate.service.MicropostService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/microposts")
@@ -34,8 +22,6 @@ import java.util.stream.Collectors;
 public class MicropostsApiController {
 
     private final MicropostService micropostService;
-    private final MicropostRepository micropostRepository;
-    // private final AttachmentService attachmentService;
 
     @GetMapping
     public ResponseEntity<Page<Micropost>> index(@RequestParam(defaultValue = "0") int page) {

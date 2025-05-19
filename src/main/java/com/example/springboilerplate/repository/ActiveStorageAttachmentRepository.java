@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ActiveStorageAttachmentRepository extends JpaRepository<ActiveStorageAttachment, Long> {
     List<ActiveStorageAttachment> findByRecordTypeAndRecordId(String recordType, Long recordId);
+    List<ActiveStorageAttachment> findByRecordTypeAndRecordIdAndName(String recordType, Long recordId, String name);
 }

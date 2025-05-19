@@ -449,6 +449,7 @@ const Home: NextPage = () => {
                   <p>{i.description}</p>
                   { i.image &&
                     <Image
+                      key={`Image-post-${i.id}-${i.image}-single`}
                       src={''+i.image+''}
                       alt="Example User"
                       width={50}
@@ -456,6 +457,17 @@ const Home: NextPage = () => {
                       priority
                     />
                   }
+                  {Array.isArray(i.imageUrls) &&
+                    i.imageUrls.map((url: string, idx: number) => (
+                    <Image
+                      key={`Image-post-${i.id}-${url}-${idx}`}
+                      src={`http://localhost:8080${url}`}
+                      alt={`Image-${url}-${idx}`}
+                      width={50}
+                      height={50}
+                      priority
+                    />
+                  ))}
                   <div className="btn btn-primary" onClick={() => handleRate(i.videoId, "like")}>
                     Like
                   </div>

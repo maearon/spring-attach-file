@@ -1,5 +1,7 @@
 package com.example.springboilerplate.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActiveStorageBlob {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String key;
     private String filename;
@@ -19,5 +22,22 @@ public class ActiveStorageBlob {
     private long byteSize;
     private String checksum;
     private String serviceName = "local";
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    // @Column(name = "updated_at")
+    // private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        // updatedAt = LocalDateTime.now();
+    }
+
+    // @PreUpdate
+    // protected void onUpdate() {
+    //     updatedAt = LocalDateTime.now();
+    // }
 }
 

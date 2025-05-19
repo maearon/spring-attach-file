@@ -14,7 +14,7 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost:3001',
-        port: '',
+        port: '3001',
         pathname: '/**',
       },
       {
@@ -27,6 +27,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ruby-rails-boilerplate-3s9t.onrender.com',
         port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
         pathname: '/**',
       },
     ],
