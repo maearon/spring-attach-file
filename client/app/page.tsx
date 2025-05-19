@@ -30,9 +30,12 @@ const Home: NextPage = () => {
   const [gravatar, setGavatar] = useState(String)
   const [content, setContent] = useState('')
   const [image, setImage] = useState(null)
+  const [images, setImages] = useState<File[]>([]);
+  const [imageNames, setImageNames] = useState<string[]>([]);
   const [imageName, setImageName] = useState('')
   const inputEl = useRef() as MutableRefObject<HTMLInputElement>
   const inputImage = useRef() as MutableRefObject<HTMLInputElement>
+  const inputImages = useRef() as MutableRefObject<HTMLInputElement>
   const [errors, setErrors] = useState<ErrorMessageType>({});
   const userData = useAppSelector(selectUser)
   const dispatch = useDispatch()
@@ -203,8 +206,8 @@ const Home: NextPage = () => {
   const handleImageInput = (e: any) => {
     if (e.target.files[0]) {
       const size_in_megabytes = e.target.files[0].size/1024/1024
-      if (size_in_megabytes > 512) {
-        alert("Maximum file size is 512MB. Please choose a smaller file.")
+      if (size_in_megabytes > 5) {
+        alert("Maximum file size is 5MB. Please choose a smaller file.")
         setImage(null)
         e.target.value = null
       } else {
@@ -212,6 +215,42 @@ const Home: NextPage = () => {
         setImageName(e.target.files[0].name)
       }
     }
+  }
+
+  const handleImagesInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+
+    const validFiles: File[] = []
+    let totalSizeMB = 0
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const fileSizeMB = file.size / 1024 / 1024
+
+      if (fileSizeMB > 5) {
+        alert(`File "${file.name}" is too large (${fileSizeMB.toFixed(2)}MB). Max size per file is 5MB.`)
+        continue
+      }
+
+      totalSizeMB += fileSizeMB
+      if (totalSizeMB > 50) {
+        alert("Total file size exceeds 50MB. Please select smaller or fewer files.")
+        e.target.value = ""
+        return
+      }
+
+      validFiles.push(file)
+    }
+
+    if (validFiles.length === 0) {
+      alert("No valid files selected.")
+      e.target.value = ""
+      return;
+    }
+
+    setImages(validFiles); // <-- array of valid image files
+    setImageNames(validFiles.map(file => file.name)); // <-- array of file names
   }
 
   const handleSubmit = (e: any) => {
@@ -222,6 +261,11 @@ const Home: NextPage = () => {
       if (image) {
         formData2.append('micropost[image]', image || new Blob, imageName)
       }
+      if (images) {
+        for (const file of images) {
+          formData2.append("micropost[images]", file);
+        }
+      }   
 
       var BASE_URL = ''
       if (process.env.NODE_ENV === 'development') {
@@ -244,13 +288,19 @@ const Home: NextPage = () => {
         if (data.flash) {
           setFeeds()
           inputEl.current.blur()
+          // inputImage.current.value = null
+          // inputImages.current.value = null
           flashMessage(...data.flash)
           setContent('')
           setImage(null)
+          setImages([])
+          setImageNames([])
           setErrors({})
         }
         if (data.error) {
           inputEl.current.blur()
+          // inputImage.current.value = null
+          // inputImages.current.value = null
         }
       })
       )
@@ -355,6 +405,15 @@ const Home: NextPage = () => {
               name="micropost[image]"
               id="micropost_image"
               onChange={handleImageInput}
+              />
+              <input
+              ref={inputImages}
+              accept="image/jpeg,image/gif,image/png"
+              type="file"
+              name="micropost[image]"
+              id="micropost_image"
+              onChange={handleImagesInput}
+              multiple
               />
             </span>
           </form>

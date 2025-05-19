@@ -1,7 +1,22 @@
-### Spring Implementation of Rails Tutorial Sample App
+### Spring Boot ActiveStorage mockup library in true polymorphic attachment style
+```
+com.example.springboilerplate
+├── annotation
+│   ├── HasOneAttached.java
+│   └── HasManyAttached.java
+├── ActiveStorageService.java
+├── ActiveStorageRegistrar.java
+├── ActiveStorageEventListener.java
+├── ActiveStorageBlob.java
+├── ActiveStorageAttachment.java
+├── ActiveStorageBlobRepository.java
+└── ActiveStorageAttachmentRepository.java
+```
+### Next Steps
 
-I'll create a Spring Boot application that replicates(coppy) the functionality of the Ruby on Rails tutorial sample app. Let's start by setting up the Spring project structure and implementing the core features.
-"Java’s compiled nature and the JVM’s optimization capabilities give it a significant performance edge, especially at scale, whereas Ruby’s interpreted model tends to limit its raw execution speed."
+1. Make sure to update the email configuration in `application.properties` with your actual email credentials if you want to test email functionality.
+2. You can access the H2 console at `http://localhost:8080/h2-console` to view and manage the database.
+3. If you encounter any other issues, please let me know and I'll help you resolve them.
 ```
 spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 spring.datasource.url=jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -9,7 +24,6 @@ http://localhost:8080/h2-console/login.do?jsessionid=41007277efb6dfcc00b5d1dc61f
 jdbc:h2:mem:testdb
 jdbc:h2:file:./data/testdb
 ```
-
 ```
 UPDATE USERS
 SET
@@ -37,6 +51,7 @@ compiler.automake.allow.when.app.running
 
 Ctrl+Shift+A → Type Build project automatically --> Check.
 ```
+Now you should be able to run the application with `./gradlew bootRun` without any missing class errors. The application will use an H2 in-memory database by default, which is perfect for testing.
 ```
 ./gradlew clean build --refresh-dependencies
 ./gradlew bootRun
@@ -93,21 +108,11 @@ I've completed the missing parts of the Spring project, including:
 
 ### ----------------------------------------------------
 
-### Fixing Circular Dependency in SecurityConfig
+### Avoice Circular Dependency in SecurityConfig
 
-Lỗi "circular dependency" (phụ thuộc vòng lặp) trong Spring Security thường xảy ra khi các bean phụ thuộc lẫn nhau. Dưới đây là cách refactor lại `SecurityConfig` để giải quyết vấn đề này:
+### 1. Use annotation `@Lazy`
 
-```typescriptreact project="shop-php"
-...
-```
-
-## Giải thích cách khắc phục Circular Dependency
-
-Tôi đã refactor lại các class liên quan đến Spring Security để tránh phụ thuộc vòng lặp. Dưới đây là những thay đổi chính:
-
-### 1. Sử dụng annotation `@Lazy`
-
-Annotation `@Lazy` được sử dụng để trì hoãn việc khởi tạo bean cho đến khi nó thực sự được cần đến. Điều này giúp phá vỡ vòng lặp phụ thuộc:
+Annotation `@Lazy` used to delay bean initialization until it is actually needed
 
 ```java
 public SecurityConfig(@Lazy CustomUserDetailsService customUserDetailsService,
@@ -117,44 +122,20 @@ public SecurityConfig(@Lazy CustomUserDetailsService customUserDetailsService,
 }
 ```
 
-### 2. Cấu trúc lại SecurityConfig
+### 2. Refactor SecurityConfig
 
-- Sử dụng `SecurityFilterChain` thay vì kế thừa `WebSecurityConfigurerAdapter` (đã bị deprecated)
-- Tách biệt cấu hình authentication và authorization
-- Sử dụng lambda expressions cho cấu hình HttpSecurity
+- Use `SecurityFilterChain` instead of inheriting `WebSecurityConfigurerAdapter` (which has been deprecated)
+- Separate authentication and authorization configuration
+- Use lambda expressions for HttpSecurity configuration
 
+### 3. Optimize JwtAuthenticationFilter
 
-### 3. Tối ưu hóa JwtAuthenticationFilter
+- Use `@Lazy` for CustomUserDetailsService in filter
+- Separate token authentication logic and user information retrieval
 
-- Sử dụng `@Lazy` cho CustomUserDetailsService trong filter
-- Tách biệt logic xác thực token và lấy thông tin người dùng
+### 4. Improve CustomUserDetailsService
 
-
-### 4. Cải thiện CustomUserDetailsService
-
-- Đơn giản hóa service để tránh phụ thuộc vào SecurityConfig
-
-
-### 5. Cập nhật application.properties
-
-- Thêm cấu hình chi tiết cho JWT, database, mail, và file upload
-
-
-## Cách kiểm tra
-
-Sau khi thực hiện các thay đổi này, bạn có thể chạy lại ứng dụng:
-
-```shellscript
-./gradlew bootRun
-```
-
-Ứng dụng sẽ khởi động mà không gặp lỗi circular dependency nữa.
-
-
-
-
-
-The implementation follows Spring Boot best practices while maintaining the functionality and user experience of the original Rails application. The templates use Thymeleaf syntax instead of ERB, but preserve the same structure and functionality as the Rails views.
+- Simplify service to avoid dependency on SecurityConfig
 
 ### -------------------------------------------------------
 
@@ -225,12 +206,3 @@ I've created all the missing files that were causing the build errors. Here's wh
 - JWT configuration
 - Mail configuration
 - File upload settings
-
-
-Now you should be able to run the application with `./gradlew bootRun` without any missing class errors. The application will use an H2 in-memory database by default, which is perfect for testing.
-
-### Next Steps
-
-1. Make sure to update the email configuration in `application.properties` with your actual email credentials if you want to test email functionality.
-2. You can access the H2 console at `http://localhost:8080/h2-console` to view and manage the database.
-3. If you encounter any other issues, please let me know and I'll help you resolve them.

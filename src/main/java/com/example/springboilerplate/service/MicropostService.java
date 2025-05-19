@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,26 +25,34 @@ public class MicropostService {
 
     private final MicropostRepository micropostRepository;
     private final UserRepository userRepository;
+    private final ActiveStorageService attachmentService;
 
     private final Path uploadPath = Paths.get("uploads");
 
     @Transactional
-    public Micropost create(String userId, String content, MultipartFile picture) throws IOException {
+    public Micropost create(String userId, String content, MultipartFile[] images) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Micropost micropost = new Micropost();
         micropost.setUser(user);
         micropost.setContent(content);
+        micropostRepository.save(micropost);
 
-        if (picture != null && !picture.isEmpty()) {
-            String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
-            Files.createDirectories(uploadPath); // ensure directory exists
-            Files.copy(picture.getInputStream(), uploadPath.resolve(filename));
-            micropost.setPicture(filename);
+        // if (picture != null && !picture.isEmpty()) {
+        //     String filename = UUID.randomUUID() + "_" + picture.getOriginalFilename();
+        //     Files.createDirectories(uploadPath); // ensure directory exists
+        //     Files.copy(picture.getInputStream(), uploadPath.resolve(filename));
+        //     micropost.setPicture(filename);
+        // }
+
+        if (images != null) {
+            for (MultipartFile file : images) {
+                attachmentService.attach(file, "Micropost", micropost.getId(), "images");
+            }
         }
 
-        return micropostRepository.save(micropost);
+        return micropost;
     }
 
     public Page<Micropost> findAll(Pageable pageable) {

@@ -110,7 +110,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\"session\":{\"email\":\"manhng11117@outlook.com\",\"password\":\"Aa123456789@*\",\"remember_me\":true}}"
+                  "textBody": "{\"session\":{\"email\":\"manh11117@outlook.com\",\"password\":\"Abc@0974006807\",\"remember_me\":true}}"
                 },
                 "uri": {
                   "query": {
@@ -897,21 +897,21 @@
         "d4c2867e-0498-48e8-a099-1f31ae9a688a": {
           "createdAt": "2025-05-14T14:28:34.230+07:00",
           "name": "token",
-          "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzQ3NDA1NjAzLCJleHAiOjE3NDgwMTA0MDN9.GGa3tZHuC7rlwhaMrpqT1gMVakw58Pg8V0HASD_m4gXBe3TiCHhrtFoy6jA_1OzZpSkjny18Pyq2jbSZ0esazg",
+          "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2Y2VkMTk4Mi02ZDc0LTRkZDctOTg4OC00ZTQ2OTI0YzkwNTAiLCJpYXQiOjE3NDc1NDI4ODgsImV4cCI6MTc0ODE0NzY4OH0.wmEElRAS2qvzgTSqjS4bSd4Oug3t39HnmWcybGxqkp2zS9XY-LcVDSYSQLTB6BHNp0tnX-Jl4qSaxa8T4OtP-A",
           "enabled": true,
           "private": false
         },
         "f05f5e03-4e47-4406-9de2-7b7f4d3e7f8b": {
           "createdAt": "2025-05-14T14:28:34.230+07:00",
           "name": "id",
-          "value": "1",
+          "value": "nlnhmwy63wdh4uzp",
           "enabled": true,
           "private": false
         },
         "85defd38-4468-4cf2-8a82-49e7ea77e4d8": {
           "createdAt": "2025-05-14T14:28:34.230+07:00",
           "name": "refresh",
-          "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzQ3NDA1NjAzLCJleHAiOjE3NDg2MTUyMDN9.itBlBS5R2fpZbSlgrzjRuT8BanzUPdqA7QbtooZum-i39DHWgX9o2XAn0PTqdZnSu3fEk8YGnOYPch0eTl-1vg",
+          "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2Y2VkMTk4Mi02ZDc0LTRkZDctOTg4OC00ZTQ2OTI0YzkwNTAiLCJpYXQiOjE3NDc1NDI4ODgsImV4cCI6MTc0ODc1MjQ4OH0.x_vPGskO7nrUaQNsn90MEjZ_mZG-Nbv3LZ0APmzEkbCV5q5O9NpDJ8ql146k6N9LJkGrzi9ujxpynym5mEofNg",
           "enabled": true,
           "private": false
         },
@@ -925,7 +925,7 @@
         "28e6c4ff-d207-4e6e-8a08-944176d566a9": {
           "createdAt": "2025-05-16T21:01:02.852+07:00",
           "name": "idd",
-          "value": "2",
+          "value": "00cffeed-248f-4fc5-92ff-b99ebbad7e8d",
           "enabled": true,
           "private": false
         }

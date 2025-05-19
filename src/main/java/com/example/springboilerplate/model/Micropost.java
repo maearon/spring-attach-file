@@ -7,8 +7,13 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import com.example.springboilerplate.annotation.HasManyAttached;
+import com.example.springboilerplate.annotation.HasOneAttached;
+
 @Data
 @Entity
+@HasOneAttached({"image"})
+@HasManyAttached({"images"})
 @Table(name = "microposts")
 public class Micropost {
 

@@ -1,0 +1,69 @@
+package com.example.springboilerplate.service;
+
+import com.example.springboilerplate.model.ActiveStorageAttachment;
+import com.example.springboilerplate.model.ActiveStorageBlob;
+import com.example.springboilerplate.repository.ActiveStorageAttachmentRepository;
+import com.example.springboilerplate.repository.ActiveStorageBlobRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class ActiveStorageService {
+
+    private final ActiveStorageBlobRepository blobRepository;
+    private final ActiveStorageAttachmentRepository attachmentRepository;
+
+    public void attach(MultipartFile file, String recordType, Long recordId, String name) {
+        try {
+            // Lưu file thật (tùy bạn config S3, local, cloud)
+            String key = UUID.randomUUID().toString();
+            Path path = Paths.get("uploads", key);
+            Files.copy(file.getInputStream(), path);
+
+            // Lưu blob
+            ActiveStorageBlob blob = new ActiveStorageBlob();
+            blob.setKey(key);
+            blob.setFilename(file.getOriginalFilename());
+            blob.setContentType(file.getContentType());
+            blob.setByteSize(file.getSize());
+            blob.setChecksum(Base64.getEncoder().encodeToString(file.getBytes())); // có thể hash SHA256 thay thế
+            blobRepository.save(blob);
+
+            // Lưu attachment
+            ActiveStorageAttachment attach = new ActiveStorageAttachment();
+            attach.setName(name);
+            attach.setRecordType(recordType);
+            attach.setRecordId(recordId);
+            attach.setBlob(blob);
+            attachmentRepository.save(attach);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Upload failed", e);
+        }
+    }
+
+    public void deleteAttachments(String recordType, Long recordId) {
+        List<ActiveStorageAttachment> attachments = attachmentRepository.findByRecordTypeAndRecordId(recordType, recordId);
+
+        for (ActiveStorageAttachment attachment : attachments) {
+            ActiveStorageBlob blob = attachment.getBlob();
+
+            // Xoá file vật lý (tuỳ config bạn)
+            Path path = Paths.get("uploads", blob.getKey());
+            try { Files.deleteIfExists(path); } catch (IOException ignored) {}
+
+            attachmentRepository.delete(attachment);
+            blobRepository.delete(blob); // bạn có thể check shared blob không rồi mới xoá
+        }
+    }
+}
+

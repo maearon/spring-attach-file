@@ -177,6 +177,25 @@
         primary key (id)
     );
 
+    CREATE TABLE active_storage_blobs (
+        id UUID PRIMARY KEY,
+        key VARCHAR(255) NOT NULL,
+        filename VARCHAR(255) NOT NULL,
+        content_type VARCHAR(255),
+        byte_size BIGINT NOT NULL,
+        checksum VARCHAR(255),
+        created_at TIMESTAMP NOT NULL DEFAULT now()
+    );
+
+    CREATE TABLE active_storage_attachments (
+        id UUID PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        record_type VARCHAR(255) NOT NULL,
+        record_id UUID NOT NULL,
+        blob_id UUID REFERENCES active_storage_blobs(id),
+        created_at TIMESTAMP NOT NULL DEFAULT now()
+    );
+
     alter table if exists microposts 
        add constraint FKpdw01oqg7mb3i9rac2mbu4yrg 
        foreign key (user_id) 
@@ -196,3 +215,40 @@
        add constraint FKem49n8xoiecjatiff5oiiyn4v 
        foreign key (follower_id) 
        references users;
+
+
+model active_storage_attachments {
+  id                   BigInt               @id @default(autoincrement())
+  name                 String               @db.VarChar
+  record_type          String               @db.VarChar
+  record_id            BigInt
+  blob_id              BigInt
+  created_at           DateTime             @db.Timestamp(6)
+  active_storage_blobs active_storage_blobs @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_c3b3935057")
+
+  @@unique([record_type, record_id, name, blob_id], map: "index_active_storage_attachments_uniqueness")
+  @@index([blob_id], map: "index_active_storage_attachments_on_blob_id")
+}
+
+model active_storage_blobs {
+  id                             BigInt                           @id @default(autoincrement())
+  key                            String                           @unique(map: "index_active_storage_blobs_on_key") @db.VarChar
+  filename                       String                           @db.VarChar
+  content_type                   String?                          @db.VarChar
+  metadata                       String?
+  service_name                   String                           @db.VarChar
+  byte_size                      BigInt
+  checksum                       String?                          @db.VarChar
+  created_at                     DateTime                         @db.Timestamp(6)
+  active_storage_attachments     active_storage_attachments[]
+  active_storage_variant_records active_storage_variant_records[]
+}
+
+model active_storage_variant_records {
+  id                   BigInt               @id @default(autoincrement())
+  blob_id              BigInt
+  variation_digest     String               @db.VarChar
+  active_storage_blobs active_storage_blobs @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rails_993965df05")
+
+  @@unique([blob_id, variation_digest], map: "index_active_storage_variant_records_uniqueness")
+}
