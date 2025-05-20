@@ -11,7 +11,7 @@ import java.util.List;
 public class MicropostResponseDto {
     private Long id;
     private String content;
-    // private String gravatar_id;
+    private String gravatar;
     private LocalDateTime createdAt;
     private UserSummaryDto user;
     private List<String> imageUrls;

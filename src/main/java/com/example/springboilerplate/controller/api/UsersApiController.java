@@ -16,6 +16,8 @@ import com.example.springboilerplate.service.ActiveStorageService;
 import com.example.springboilerplate.service.MicropostService;
 import com.example.springboilerplate.service.RelationshipService;
 import com.example.springboilerplate.service.UserService;
+import com.example.springboilerplate.utils.GravatarUtils;
+
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -101,6 +103,7 @@ public class UsersApiController {
             return new MicropostResponseDto(
                     m.getId(),
                     m.getContent(),
+                    GravatarUtils.getGravatarUrl(m.getUser().getEmail(), 50),
                     m.getCreatedAt(),
                     new UserSummaryDto(
                             m.getUser().getId(),

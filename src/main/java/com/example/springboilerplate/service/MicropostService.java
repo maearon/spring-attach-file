@@ -4,6 +4,8 @@ import com.example.springboilerplate.model.Micropost;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.MicropostRepository;
 import com.example.springboilerplate.repository.UserRepository;
+import com.example.springboilerplate.utils.GravatarUtils;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,6 +91,7 @@ public class MicropostService {
                 return new MicropostResponseDto(
                     m.getId(),
                     m.getContent(),
+                    GravatarUtils.getGravatarUrl(m.getUser().getEmail(), 50),
                     m.getCreatedAt(),
                     new UserSummaryDto(
                         m.getUser().getId(),
