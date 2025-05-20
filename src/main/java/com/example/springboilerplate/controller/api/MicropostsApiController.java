@@ -48,8 +48,8 @@ public class MicropostsApiController {
             }
 
             return ResponseEntity.ok(Map.of(
-                "flash", List.of("success", "Micropost created!"),
-                "post", micropost
+                "flash", List.of("success", "Micropost created!")
+                // "post", micropost
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

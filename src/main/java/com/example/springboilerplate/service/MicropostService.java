@@ -115,6 +115,12 @@ public class MicropostService {
             //         // Log error nếu cần
             //     }
             // }
+            List<String> imageUrls = attachmentService.findAttachments("Micropost", micropost.getId(), "images");
+            if (imageUrls != null) {
+                for (String imageUrl : imageUrls) {
+                    attachmentService.deleteAttachments("Micropost", imageUrl.replace("/uploads/", ""));
+                }
+            }
             micropostRepository.deleteById(id);
             return true;
         }

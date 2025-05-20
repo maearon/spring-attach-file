@@ -63,19 +63,21 @@ public class ActiveStorageService {
             .toList();
     }
 
-    public void deleteAttachments(String recordType, Long recordId) {
-        List<ActiveStorageAttachment> attachments = attachmentRepository.findByRecordTypeAndRecordId(recordType, recordId);
+    public void deleteAttachments(String recordType, String blobKey) {
+    List<ActiveStorageAttachment> attachments = attachmentRepository
+        .findByRecordTypeAndBlobKey(recordType, blobKey);
 
         for (ActiveStorageAttachment attachment : attachments) {
             ActiveStorageBlob blob = attachment.getBlob();
 
-            // Xoá file vật lý (tuỳ config bạn)
+            // Xoá file vật lý (nếu có)
             Path path = Paths.get("uploads", blob.getKey());
             try { Files.deleteIfExists(path); } catch (IOException ignored) {}
 
             attachmentRepository.delete(attachment);
-            blobRepository.delete(blob); // bạn có thể check shared blob không rồi mới xoá
+            blobRepository.delete(blob);
         }
     }
+
 }
 
