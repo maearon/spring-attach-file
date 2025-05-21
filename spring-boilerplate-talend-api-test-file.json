@@ -268,7 +268,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n\n      \t\"name\": \"manhng1117\",\n        \"email\": \"manhng11117@outlook.com\",\n        \"password\": \"Aa123456789@*\",\n        \"matchingPassword\": \"Aa123456789@*\"\n\n}"
+                  "textBody": "{\"user\":{\"name\":\"manh11117@outlook.com\",\"email\":\"manh11117@outlook.com\",\"password\":\"Aa123456789@*\",\"password_confirmation\":\"Aa123456789@*\"}}"
                 },
                 "uri": {
                   "query": {
