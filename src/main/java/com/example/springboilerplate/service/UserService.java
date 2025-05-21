@@ -31,7 +31,8 @@ public class UserService {
                 .map(m -> new UsersResponseDto(
                         m.getId(),
                         m.getName(),
-                        m.getEmail()
+                        m.getEmail(),
+                        m.getGravatar()
                 ));
     }
 

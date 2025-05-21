@@ -96,7 +96,8 @@ public class MicropostService {
                     new UserSummaryDto(
                         m.getUser().getId(),
                         m.getUser().getName(),
-                        m.getUser().getEmail()
+                        m.getUser().getEmail(),
+                        m.getUser().getGravatar()
                     ),
                     imageUrls // <-- thêm dòng này
                 );

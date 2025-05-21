@@ -9,4 +9,5 @@ public class UserSummaryDto {
     private String id;
     private String name;
     private String email;
+    private String gravatar;
 }

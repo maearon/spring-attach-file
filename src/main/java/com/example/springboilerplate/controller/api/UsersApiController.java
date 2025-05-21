@@ -92,13 +92,14 @@ public class UsersApiController {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getGravatar(),
                 followingCount,
                 followersCount,
                 isFollowing
         );
 
         List<MicropostResponseDto> micropostDtos = microposts.getContent().stream().map(m -> {
-            String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
+            // String gravatarId = DigestUtils.md5DigestAsHex(m.getUser().getEmail().toLowerCase().getBytes());
             List<String> imageUrls = attachmentService.findAttachments("Micropost", m.getId(), "images");
             return new MicropostResponseDto(
                     m.getId(),
@@ -108,7 +109,8 @@ public class UsersApiController {
                     new UserSummaryDto(
                             m.getUser().getId(),
                             m.getUser().getName(),
-                            m.getUser().getEmail()
+                            m.getUser().getEmail(),
+                            m.getUser().getGravatar()
                     ),
                     imageUrls // <-- thêm dòng này
             );
@@ -146,7 +148,8 @@ public class UsersApiController {
             new UserSummaryDto(
                 u.getId(),
                 u.getName(),
-                u.getEmail()
+                u.getEmail(),
+                u.getGravatar()
                 // md5Hex(u.getEmail().toLowerCase()),
                 // 50
             )
@@ -156,7 +159,8 @@ public class UsersApiController {
             new UserSummaryDto(
                 u.getId(),
                 u.getName(),
-                u.getEmail()
+                u.getEmail(),
+                u.getGravatar()
                 // md5Hex(u.getEmail().toLowerCase()),
                 // 30
             )
@@ -204,7 +208,8 @@ public class UsersApiController {
             new UserSummaryDto(
                 u.getId(),
                 u.getName(),
-                u.getEmail()
+                u.getEmail(),
+                u.getGravatar()
                 // md5Hex(u.getEmail().toLowerCase()),
                 // 50
             )
@@ -214,7 +219,8 @@ public class UsersApiController {
             new UserSummaryDto(
                 u.getId(),
                 u.getName(),
-                u.getEmail()
+                u.getEmail(),
+                u.getGravatar()
                 // md5Hex(u.getEmail().toLowerCase()),
                 // 30
             )

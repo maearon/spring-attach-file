@@ -8,6 +8,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -122,5 +123,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return activated;
+    }
+
+    public String getGravatar() {
+        String validEmail = (email != null) ? email.trim().toLowerCase() : "test@example.com";
+        String emailHash = DigestUtils.md5DigestAsHex(validEmail.trim().toLowerCase().getBytes());
+        return "https://secure.gravatar.com/avatar/" + emailHash + "?s=80";
     }
 }
