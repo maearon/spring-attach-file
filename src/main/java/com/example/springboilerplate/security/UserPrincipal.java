@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,5 +113,11 @@ public class UserPrincipal implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String getGravatar() {
+        String validEmail = (email != null) ? email.trim().toLowerCase() : "test@example.com";
+        String emailHash = DigestUtils.md5DigestAsHex(validEmail.trim().toLowerCase().getBytes());
+        return "https://secure.gravatar.com/avatar/" + emailHash + "?s=80";
     }
 }

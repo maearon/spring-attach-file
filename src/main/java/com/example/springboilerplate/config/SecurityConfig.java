@@ -106,7 +106,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/", "/home", "/about", "/help", "/contact").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                .requestMatchers("/signup", "/login").permitAll()
+                .requestMatchers("/api/signup", "/api/login", "/error").permitAll()
                 .requestMatchers("/account-activation/**").permitAll()
                 .requestMatchers("/password-resets/**").permitAll()
                 .anyRequest().authenticated()

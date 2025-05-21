@@ -5,6 +5,7 @@ import com.example.springboilerplate.dto.JwtResponseDto;
 import com.example.springboilerplate.dto.LoginDto;
 import com.example.springboilerplate.dto.RefreshTokenRequestDto;
 import com.example.springboilerplate.dto.RegisterDto;
+import com.example.springboilerplate.dto.RegisterRequest;
 import com.example.springboilerplate.dto.SessionResponseDto;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.UserRepository;
@@ -51,15 +52,12 @@ public class AuthApiController {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
-        // String emailHash = DigestUtils.md5Hex(currentUser.getEmail().toLowerCase());
-        // String avatarUrl = "https://secure.gravatar.com/avatar/" + emailHash + "?s=50";
-
         SessionResponseDto.UserDto userDto = SessionResponseDto.UserDto.builder()
                 .id(currentUser.getId())
                 .email(currentUser.getEmail())
                 .name(currentUser.getName())
                 .admin(currentUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                // .avatar(avatarUrl)
+                .gravatar(currentUser.getGravatar())
                 .build();
 
         return ResponseEntity.ok(Map.of("user", userDto));
@@ -118,7 +116,8 @@ public class AuthApiController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterDto registerDto) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
+        RegisterDto registerDto = request.getUser();
         if (userService.existsByEmail(registerDto.getEmail())) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, "Email is already taken!"));

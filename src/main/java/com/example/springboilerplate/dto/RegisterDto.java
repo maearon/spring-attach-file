@@ -2,6 +2,7 @@ package com.example.springboilerplate.dto;
 
 import com.example.springboilerplate.validation.PasswordMatches;
 import com.example.springboilerplate.validation.ValidEmail;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,5 +34,6 @@ public class RegisterDto {
 
     @NotNull
     @NotEmpty
+    @JsonProperty("password_confirmation")
     private String matchingPassword;
 }
