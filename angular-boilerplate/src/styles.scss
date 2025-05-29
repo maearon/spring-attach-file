@@ -1,0 +1,57 @@
+/* You can add global styles to this file, and also import other style files */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+}
+
+.gravatar {
+  border-radius: 50%;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pagination .ngx-pagination {
+  margin: 0;
+  padding: 0;
+}
+
+.pagination .ngx-pagination .current {
+  background: #0d6efd;
+}
+
+.pagination .ngx-pagination a:hover {
+  background: #e9ecef;
+}
+
+.jumbotron {
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
+}
+
+@media (min-width: 576px) {
+  .jumbotron {
+    padding: 4rem 2rem;
+  }
+}
+
+.media {
+  display: flex;
+  align-items: flex-start;
+}
+
+.media-body {
+  flex: 1;
+}

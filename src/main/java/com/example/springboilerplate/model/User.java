@@ -28,6 +28,16 @@ public class User implements UserDetails {
     private String name;
 
     @NotBlank
+    @Size(min = 3, max = 50)
+    @Column(nullable = false)
+    private String username;
+
+    // @NotBlank
+    // @Size(min = 3, max = 50)
+    // @Column(name = "\"displayName\"", nullable = false)
+    // private String displayName;
+
+    @NotBlank
     @Email
     @Column(nullable = false, unique = true)
     private String email;
@@ -102,7 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override

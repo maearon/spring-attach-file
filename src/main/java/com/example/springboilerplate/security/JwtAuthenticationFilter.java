@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import java.util.List;
 
 import java.io.IOException;
 
@@ -31,10 +32,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    private static final List<String> EXCLUDED_PATHS = List.of(
+        "/api/login",
+        "/api/signup",
+        "/api/password-reset",
+        "/api/password-reset/**",
+        "/api/account-activation",
+        "/uploads/",
+        "/error"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
+        String path = request.getRequestURI();
+
+        // Bỏ qua filter cho các URL không cần xác thực
+        if (EXCLUDED_PATHS.stream().anyMatch(path::startsWith)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
+            
+
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {

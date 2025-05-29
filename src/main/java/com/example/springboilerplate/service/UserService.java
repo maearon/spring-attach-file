@@ -31,6 +31,7 @@ public class UserService {
                 .map(m -> new UsersResponseDto(
                         m.getId(),
                         m.getName(),
+                        m.getUsername(),
                         m.getEmail(),
                         m.getGravatar()
                 ));
@@ -171,6 +172,8 @@ public class UserService {
         User user = new User();
         user.setId(UUID.randomUUID().toString());
         user.setName(name);
+        user.setUsername(name);
+        // user.setDisplayName(name);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password)); // Ensure password is hashed before saving
         user.setActivationDigest(UUID.randomUUID().toString());

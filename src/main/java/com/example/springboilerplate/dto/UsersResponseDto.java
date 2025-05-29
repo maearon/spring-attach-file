@@ -10,12 +10,14 @@ import org.springframework.util.DigestUtils;
 public class UsersResponseDto {
     private String id;
     private String name;
+    private String username;
     private String email;
     private String gravatar;
 
     public UsersResponseDto(String id, String name, String email) {
         this.id = id;
         this.name = name;
+        this.username = username;
         this.email = email;
         this.gravatar = buildGravatar(email);
     }
