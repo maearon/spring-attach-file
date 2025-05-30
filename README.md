@@ -13,6 +13,11 @@ OS name: "linux", version: "6.11.0-26-generic", arch: "amd64", family: "unix"
 maearon@maearon:~/code/spring-boilerplate$ mvn -N io.takari:maven:wrapper
 
 ./mvnw clean install
+
+mvn spring-boot:run
+
+cd angular-boilerplate/
+ng serve
 ```
 
 ### Spring Boot ActiveStorage mockup library in true polymorphic attachment style
