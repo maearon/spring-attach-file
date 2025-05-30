@@ -1,4 +1,8 @@
+### Social App Angular 19 StandAlone Mode + Spring Boot only API + Thymeleaf
+
 ```
+Init Config from https://start.spring.io/: See ./spring.png 
+
 sudo apt update
 
 sudo apt install maven
@@ -14,7 +18,11 @@ maearon@maearon:~/code/spring-boilerplate$ mvn -N io.takari:maven:wrapper
 
 ./mvnw clean install
 
-mvn spring-boot:run
+mvn spring-boot:run OR
+IntelliJ IDEA 
+---> src/main/java/com/example/springboilerplate/SpringBoilerplateApplication.java 
+----> Right Click
+------> ▶️ Run 
 
 cd angular-boilerplate/
 ng serve
