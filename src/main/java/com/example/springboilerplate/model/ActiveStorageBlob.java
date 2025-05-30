@@ -18,9 +18,12 @@ public class ActiveStorageBlob {
     private Long id;
     private String key;
     private String filename;
+    @Column(name = "content_type")
     private String contentType;
+    @Column(name = "byte_size")
     private long byteSize;
     private String checksum;
+    @Column(name = "service_name")
     private String serviceName = "local";
 
     @Column(name = "created_at")

@@ -50,6 +50,7 @@ public class ActiveStorageService {
             attachmentRepository.save(attach);
 
         } catch (IOException e) {
+            e.printStackTrace(); // In stack trace ra console
             throw new RuntimeException("Upload failed", e);
         }
     }

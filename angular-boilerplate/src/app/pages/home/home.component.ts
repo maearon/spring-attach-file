@@ -136,7 +136,7 @@ import { TimeAgoPipe } from "../../pipes/time-ago.pipe"
                     <div *ngIf="item.imageUrls.length > 0" class="mt-2">
                       <img
                         *ngFor="let imageUrl of item.imageUrls; let idx = index"
-                        [src]="'http://localhost:8080/api' + imageUrl"
+                        [src]="'http://localhost:8080' + imageUrl"
                         [alt]="'Image-' + imageUrl + '-' + idx"
                         class="img-fluid mt-2"
                         width="50"
