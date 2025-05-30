@@ -32,10 +32,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String username;
 
-    // @NotBlank
-    // @Size(min = 3, max = 50)
-    // @Column(name = "\"displayName\"", nullable = false)
-    // private String displayName;
+     @NotBlank
+     @Size(min = 3, max = 50)
+     @Column(name = "\"displayName\"", nullable = true)
+     private String displayName;
 
     @NotBlank
     @Email

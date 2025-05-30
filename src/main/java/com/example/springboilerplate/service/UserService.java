@@ -173,7 +173,7 @@ public class UserService {
         user.setId(UUID.randomUUID().toString());
         user.setName(name);
         user.setUsername(name);
-        // user.setDisplayName(name);
+        user.setDisplayName(name);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password)); // Ensure password is hashed before saving
         user.setActivationDigest(UUID.randomUUID().toString());
