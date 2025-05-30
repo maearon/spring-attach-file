@@ -1,3 +1,20 @@
+```
+sudo apt update
+
+sudo apt install maven
+
+maearon@maearon:~/code/spring-boilerplate$ mvn -v
+Apache Maven 3.8.7
+Maven home: /usr/share/maven
+Java version: 21.0.7, vendor: Ubuntu, runtime: /usr/lib/jvm/java-21-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.11.0-26-generic", arch: "amd64", family: "unix"
+
+maearon@maearon:~/code/spring-boilerplate$ mvn -N io.takari:maven:wrapper
+
+./mvnw clean install
+```
+
 ### Spring Boot ActiveStorage mockup library in true polymorphic attachment style
 ```
 com.example.springboilerplate
