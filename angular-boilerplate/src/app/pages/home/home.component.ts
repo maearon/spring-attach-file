@@ -95,6 +95,13 @@ import { TimeAgoPipe } from "../../pipes/time-ago.pipe"
                     accept="image/jpeg,image/gif,image/png"
                     (change)="handleImageInput($event)"
                   >
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/jpeg,image/gif,image/png"
+                    multiple
+                    (change)="handleImagesInput($event)"
+                  >
                 </div>
               </div>
             </form>
@@ -215,6 +222,8 @@ export class HomeComponent implements OnInit {
   content = ""
   image: File | null = null
   imageName = ""
+  images: File[] | null = null
+  imageNames: string[] = []
   errors: string[] = []
   submitting = false
 
@@ -285,38 +294,87 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  handleImagesInput(event: Event): void {
+    const input = event.target as HTMLInputElement
+    const files = input.files
+    if (!files) return
+
+    const validFiles: File[] = []
+    let totalSizeMB = 0
+
+    for (const file of Array.from(files)) {
+      const fileSizeMB = file.size / 1024 / 1024
+
+      if (fileSizeMB > 5) {
+        this.toastr.error(`File "${file.name}" is too large (${fileSizeMB.toFixed(2)}MB). Max size per file is 5MB.`)
+        continue
+      }
+
+      totalSizeMB += fileSizeMB
+      if (totalSizeMB > 50) {
+        this.toastr.error("Total file size exceeds 50MB. Please select smaller or fewer files.")
+        input.value = ""
+        return
+      }
+
+      validFiles.push(file)
+    }
+
+    if (validFiles.length === 0) {
+      this.toastr.error("No valid files selected.")
+      input.value = ""
+      return;
+    }
+
+    this.images = validFiles // <-- array of valid image files
+    this.imageNames = validFiles.map(file => file.name) // <-- array of file names
+  }
+
   handleSubmit(): void {
     this.submitting = true
     this.errors = []
+    if (this.content.trim().length > 0){
+      const formData = new FormData()
+      formData.append("micropost[content]", this.content)
 
-    const formData = new FormData()
-    formData.append("micropost[content]", this.content)
+      if (this.image) {
+        formData.append("micropost[images]", this.image || new Blob, this.imageName)
+      }
+      if (this.images) {
+        for (let i = 0; i < this.images.length; i++) {
+          const file = this.images[i];
+          const filename = this.imageNames[i]; // Take corresponding name
+          formData.append("micropost[images]", file, filename);
+        }
+      }
 
-    if (this.image) {
-      formData.append("micropost[images]", this.image, this.imageName)
+      this.micropostService.create(formData).subscribe({
+        next: (response) => {
+          if (response.flash) {
+            this.toastr.success(response.flash[1])
+            this.content = ""
+            this.image = null
+            this.imageName = ""
+            this.images = null
+            this.imageNames = []
+            this.errors = []
+            this.loadFeed()
+          }
+
+          if (response.error) {
+            this.errors = response.error
+          }
+
+          this.submitting = false
+        },
+        error: (error) => {
+          this.toastr.error("Failed to create micropost")
+          this.submitting = false
+        },
+      })
+    } else {
+      this.errors = ["Content can't be blank"]
     }
-
-    this.micropostService.create(formData).subscribe({
-      next: (response) => {
-        if (response.flash) {
-          this.toastr.success(response.flash[1])
-          this.content = ""
-          this.image = null
-          this.errors = []
-          this.loadFeed()
-        }
-
-        if (response.error) {
-          this.errors = response.error
-        }
-
-        this.submitting = false
-      },
-      error: (error) => {
-        this.toastr.error("Failed to create micropost")
-        this.submitting = false
-      },
-    })
   }
 
   removeMicropost(event: Event, micropostId: number): void {
