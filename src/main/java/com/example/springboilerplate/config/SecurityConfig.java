@@ -59,7 +59,7 @@ public class SecurityConfig {
             "http://localhost:19006",
             "https://aa9e-2001-ee0-4422-98f0-73c6-d4af-616c-fc1.ngrok-free.app",
             "https://studio.apollographql.com",
-            "https://spring-boilerplate.onrender.com",
+            "https://angular-boilerplate-eta-sepia.vercel.app",
             "https://funny-movies-79gl1t9ss-maearons-projects.vercel.app",
             "https://funny-movies-pied.vercel.app",
             "https://sample-1xdla8a74-maearons-projects.vercel.app",
