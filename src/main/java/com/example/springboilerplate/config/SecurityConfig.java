@@ -2,7 +2,6 @@ package com.example.springboilerplate.config;
 
 import com.example.springboilerplate.security.JwtAuthenticationEntryPoint;
 import com.example.springboilerplate.security.JwtAuthenticationFilter;
-import com.example.springboilerplate.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -60,8 +59,7 @@ public class SecurityConfig {
             "http://localhost:19006",
             "https://aa9e-2001-ee0-4422-98f0-73c6-d4af-616c-fc1.ngrok-free.app",
             "https://studio.apollographql.com",
-            "https://ruby-rails-boilerplate-chv2p231v-maearons-projects.vercel.app",
-            "https://ruby-rails-boilerplate.vercel.app",
+            "https://spring-boilerplate.onrender.com",
             "https://funny-movies-79gl1t9ss-maearons-projects.vercel.app",
             "https://funny-movies-pied.vercel.app",
             "https://sample-1xdla8a74-maearons-projects.vercel.app",

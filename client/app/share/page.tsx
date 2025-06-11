@@ -139,7 +139,7 @@ const Home: NextPage = () => {
       if (process.env.NODE_ENV === 'development') {
         BASE_URL = 'http://localhost:8080/api'
       } else if (process.env.NODE_ENV === 'production') {
-        BASE_URL = 'https://ruby-rails-boilerplate-3s9t.onrender.com/api'
+        BASE_URL = 'https://spring-boilerplate.onrender.com/api'
       }
 
       fetch(BASE_URL+`/microposts`, {
