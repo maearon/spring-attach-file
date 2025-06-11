@@ -1,6 +1,7 @@
 package com.example.springboilerplate.controller.api;
 
 import com.example.springboilerplate.dto.ApiResponse;
+import com.example.springboilerplate.dto.EditResponseDto;
 import com.example.springboilerplate.dto.FollowingResponseDto;
 import com.example.springboilerplate.dto.MicropostResponseDto;
 import com.example.springboilerplate.dto.ShowResponseDto;
@@ -28,7 +29,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -123,6 +123,24 @@ public class UsersApiController {
                 userDto
         );
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/edit")
+    public ResponseEntity<?> edit(@AuthenticationPrincipal UserPrincipal currentUser) {
+        UserSummaryDto userDto = new UserSummaryDto(
+            currentUser.getId(),
+            currentUser.getName(),
+            currentUser.getEmail(),
+            currentUser.getGravatar()
+            // GravatarUtils.getGravatarUrl(currentUser.getEmail(), 80)
+        );
+
+        EditResponseDto response = new EditResponseDto(
+            userDto,
+            currentUser.getGravatar()
+            // GravatarUtils.getGravatarUrl(currentUser.getEmail(), 80)
+        );
         return ResponseEntity.ok(response);
     }
 
