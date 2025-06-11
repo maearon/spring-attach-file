@@ -1,13 +1,10 @@
 services:
   - type: web
-    name: springboot-boilerplate
-    env: docker
+    name: spring-boilerplate
+    env: java
     plan: free
-    dockerfilePath: ./Dockerfile
+    buildCommand: ./mvnw clean install
+    startCommand: java -jar target/*.jar
     envVars:
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://ep-bold-voice-a4yp8xc9-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
-      - key: SPRING_DATASOURCE_USERNAME
-        value: default
-      - key: SPRING_DATASOURCE_PASSWORD
-        value: z9GYTlrXa8Qx
+      - key: PORT
+        value: 8080
