@@ -5,8 +5,10 @@ import com.example.springboilerplate.dto.EditResponseDto;
 import com.example.springboilerplate.dto.FollowingResponseDto;
 import com.example.springboilerplate.dto.MicropostResponseDto;
 import com.example.springboilerplate.dto.ShowResponseDto;
+import com.example.springboilerplate.dto.UpdateUserRequest;
+import com.example.springboilerplate.dto.UpdateUserWrapperRequest;
 import com.example.springboilerplate.dto.UserDetailDto;
-import com.example.springboilerplate.dto.UserDto;
+// import com.example.springboilerplate.dto.UserDto;
 import com.example.springboilerplate.dto.UserShowDto;
 import com.example.springboilerplate.dto.UserSummaryDto;
 import com.example.springboilerplate.dto.UsersResponseDto;
@@ -22,13 +24,16 @@ import com.example.springboilerplate.utils.GravatarUtils;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -264,29 +269,108 @@ public class UsersApiController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, 
-                                   @Valid @RequestBody UserDto userDto,
-                                   @AuthenticationPrincipal User currentUser) {
-        if (!currentUser.getId().equals(id) && !currentUser.isAdmin()) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to update this user"));
+    // @PutMapping("/{id}")
+    // public ResponseEntity<?> update(@PathVariable String id, 
+    //                                @Valid @RequestBody UserDto userDto,
+    //                                @AuthenticationPrincipal User currentUser) {
+    //     if (!currentUser.getId().equals(id) && !currentUser.isAdmin()) {
+    //         return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to update this user"));
+    //     }
+
+    //     User updatedUser = userService.updateUser(id, userDto.getName(), userDto.getEmail(), userDto.getPassword());
+    //     return ResponseEntity.ok(updatedUser);
+    // }
+    @PatchMapping("/{id}")
+    // @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
+    public ResponseEntity<?> update(
+        @PathVariable String id,
+        @Valid @RequestBody UpdateUserWrapperRequest wrapper, 
+        @AuthenticationPrincipal User currentUser
+    ) {
+        UpdateUserRequest request = wrapper.getUser();
+
+        Optional<User> optionalUser = userService.findById(id);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User not found"));
         }
 
-        User updatedUser = userService.updateUser(id, userDto.getName(), userDto.getEmail(), userDto.getPassword());
-        return ResponseEntity.ok(updatedUser);
+        if (!currentUser.getId().equals(id)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền cập nhật người dùng này."));
+        }
+
+        // if (!currentUser.getId().equals(id) && !currentUser.isAdmin()) {
+        //     return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to update this user"));
+        // }
+
+        User user = optionalUser.get();
+
+        // Xử lý cập nhật thông tin cá nhân (name, email)
+        boolean profileUpdated = userService.updateProfile(user, request);
+        if (!profileUpdated) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Email đã được sử dụng."));
+        }
+
+        // Xử lý đổi mật khẩu nếu có nhập
+        boolean hasPassword = StringUtils.hasText(request.getPassword());
+        boolean hasConfirm = StringUtils.hasText(request.getPassword_confirmation());
+
+        if (hasPassword || hasConfirm) {
+            if (!hasPassword || !hasConfirm || !request.getPassword().equals(request.getPassword_confirmation())) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Mật khẩu xác nhận không khớp."));
+            }
+
+            boolean passwordChanged = userService.changePassword(user, request.getPassword());
+            if (!passwordChanged) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Cập nhật mật khẩu thất bại."));
+            }
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "flash_success", List.of("Success", "Cập nhật thành công.")
+        ));
     }
 
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<?> destroy(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
+    //     if (!currentUser.isAdmin()) {
+    //         return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to delete users"));
+    //     }
+
+    //     boolean deleted = userService.deleteUser(id);
+    //     if (deleted) {
+    //         return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully"));
+    //     } else {
+    //         return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to delete user"));
+    //     }
+    // }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
+    // @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
+        Optional<User> userOpt = userService.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User not found"));
+        }
+
         if (!currentUser.isAdmin()) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to delete users"));
         }
 
         boolean deleted = userService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully"));
-        } else {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to delete user"));
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to delete user"));
         }
+
+        return ResponseEntity.ok(Map.of(
+                "flash", List.of("Success", "User deleted successfully")
+        ));
     }
 }

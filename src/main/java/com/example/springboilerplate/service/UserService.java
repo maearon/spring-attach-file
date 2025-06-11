@@ -1,5 +1,6 @@
 package com.example.springboilerplate.service;
 
+import com.example.springboilerplate.dto.UpdateUserRequest;
 import com.example.springboilerplate.dto.UsersResponseDto;
 import com.example.springboilerplate.model.User;
 import com.example.springboilerplate.repository.UserRepository;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +63,45 @@ public class UserService {
     @Transactional
     public User update(User user) {
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public boolean changePassword(User user, String newPassword) {
+        if (user == null || !StringUtils.hasText(newPassword)) return false;
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+        return true;
+    }
+
+    @Transactional
+    public boolean updateProfile(User user, UpdateUserRequest request) {
+        boolean changed = false;
+
+        // Update name
+        if (StringUtils.hasText(request.getName()) && !request.getName().equals(user.getName())) {
+            user.setName(request.getName());
+            changed = true;
+        }
+
+        // Update email (only if not taken)
+        if (StringUtils.hasText(request.getEmail())
+                && !request.getEmail().equals(user.getEmail())) {
+
+            if (existsByEmail(request.getEmail())) {
+                return false; // Email đã được dùng
+            }
+
+            user.setEmail(request.getEmail());
+            changed = true;
+        }
+
+        if (changed) {
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+        }
+
+        return true;
     }
 
     @Transactional

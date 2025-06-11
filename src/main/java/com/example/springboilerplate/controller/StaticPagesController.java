@@ -23,7 +23,7 @@ public class StaticPagesController {
         if (currentUser != null) {
             model.addAttribute("micropost", new Micropost());
             int safePage = Math.max(0, 1 - 1);
-            Page<MicropostResponseDto> feed = micropostService.getFeed(currentUser.getId(), PageRequest.of(0, 5));
+            Page<MicropostResponseDto> feed = micropostService.getFeed(currentUser.getId(), PageRequest.of(safePage, 5));
             model.addAttribute("feed", feed);
             return "home/home_with_feed";
         }
