@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{a as n}from"./chunk-V7CMVNQF.mjs";import{_ as r,da as a}from"./chunk-LQE7B4AG.mjs";var o=class i{constructor(t){this.apiService=t}resendActivationEmail(t){return this.apiService.post("/account_activations",t)}activateAccount(t,e){return this.apiService.patch(`/account_activations/${t}`,{email:e})}static \u0275fac=function(e){return new(e||i)(a(n))};static \u0275prov=r({token:i,factory:i.\u0275fac,providedIn:"root"})};export{o as a};

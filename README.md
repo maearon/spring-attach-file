@@ -1,5 +1,32 @@
 ### Social App Angular 19 StandAlone Mode + Spring Boot only API + Thymeleaf
 
+
+```
+1998  cd angular-boilerplate/
+ 1999  ng build --configuration=production
+ 2000  sudo apt update
+ 2001  sudo apt install nodejs npm -y
+ 2002  node -v
+ 2003  npm -v
+ 2004  sudo npm install -g @angular/cli
+ 2005  ng build --configuration=production
+ 2006  nvm list
+ 2007  nvm --list
+ 2008  node -v
+ 2009  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+ 2010  source ~/.bashrc
+ 2011  nvm --version
+ 2012  nvm install 22.12.0
+ 2013  nvm alias default v22.12.0
+ 2014  nvm use default
+ 2015  ng build --configuration=production
+ 2016  npm i
+ 2017  ng build --configuration=production
+ 2018  ng serve
+ ----> localhost:4200
+
+```
+
 ```
 Init Config from https://start.spring.io/: See ./spring.png 
 

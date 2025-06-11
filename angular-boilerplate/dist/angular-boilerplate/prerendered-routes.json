@@ -1,0 +1,30 @@
+{
+  "routes": {
+    "/": {},
+    "/about": {},
+    "/account_activations/new": {},
+    "/account_activations/token1/edit": {},
+    "/account_activations/token2/edit": {},
+    "/account_activations/token3/edit": {},
+    "/contact": {},
+    "/login": {},
+    "/password_resets/new": {},
+    "/password_resets/token1": {},
+    "/password_resets/token2": {},
+    "/password_resets/token3": {},
+    "/signup": {},
+    "/users": {},
+    "/users/1": {},
+    "/users/1/edit": {},
+    "/users/1/followers": {},
+    "/users/1/following": {},
+    "/users/2": {},
+    "/users/2/edit": {},
+    "/users/2/followers": {},
+    "/users/2/following": {},
+    "/users/3": {},
+    "/users/3/edit": {},
+    "/users/3/followers": {},
+    "/users/3/following": {}
+  }
+}

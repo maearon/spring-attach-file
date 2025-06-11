@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{a as o}from"./chunk-V7CMVNQF.mjs";import{_ as t,da as a}from"./chunk-LQE7B4AG.mjs";var i=class s{constructor(e){this.apiService=e}requestPasswordReset(e){return this.apiService.post("/password_resets",e)}resetPassword(e,r){return this.apiService.patch(`/password_resets/${e}`,r)}static \u0275fac=function(r){return new(r||s)(a(o))};static \u0275prov=t({token:s,factory:s.\u0275fac,providedIn:"root"})};export{i as a};

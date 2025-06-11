@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{Cb as e,Db as n,Nc as i,Pb as t,kb as c}from"./chunk-LQE7B4AG.mjs";import"./chunk-X2SEQXRR.mjs";var p=class a{static \u0275fac=function(o){return new(o||a)};static \u0275cmp=c({type:a,selectors:[["app-contact"]],decls:7,vars:0,consts:[["href","https://angular.dev/tutorials"]],template:function(o,s){o&1&&(e(0,"h1"),t(1,"Contact"),n(),e(2,"p"),t(3," Contact the Angular Tutorial about the sample app at the "),e(4,"a",0),t(5,"contact page"),n(),t(6,". "),n())},dependencies:[i],encapsulation:2})};export{p as ContactComponent};
