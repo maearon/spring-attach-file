@@ -284,8 +284,8 @@ public class UsersApiController {
     // @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<?> update(
         @PathVariable String id,
-        @Valid @RequestBody UpdateUserWrapperRequest wrapper, 
-        @AuthenticationPrincipal User currentUser
+        @Valid @RequestBody UpdateUserWrapperRequest wrapper,
+        @AuthenticationPrincipal UserPrincipal currentUser
     ) {
         UpdateUserRequest request = wrapper.getUser();
 
@@ -352,7 +352,7 @@ public class UsersApiController {
     // }
     @DeleteMapping("/{id}")
     // @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUser(@PathVariable String id, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<?> deleteUser(@PathVariable String id, @AuthenticationPrincipal UserPrincipal currentUser) {
         Optional<User> userOpt = userService.findById(id);
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
