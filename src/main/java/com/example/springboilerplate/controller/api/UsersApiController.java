@@ -1,6 +1,6 @@
 package com.example.springboilerplate.controller.api;
 
-import com.example.springboilerplate.dto.ApiResponse;
+// import com.example.springboilerplate.dto.ApiResponse;
 import com.example.springboilerplate.dto.EditResponseDto;
 import com.example.springboilerplate.dto.FollowingResponseDto;
 import com.example.springboilerplate.dto.MicropostResponseDto;
@@ -31,7 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -297,6 +297,7 @@ public class UsersApiController {
 
         if (!currentUser.getId().equals(id)) {
             return ResponseEntity.status(403).body(Map.of("error", "Bạn không có quyền cập nhật người dùng này."));
+            //return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to access this user"));
         }
 
         // if (!currentUser.getId().equals(id) && !currentUser.isAdmin()) {
@@ -351,16 +352,12 @@ public class UsersApiController {
     //     }
     // }
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasRole('ADMIN')")
+     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable String id, @AuthenticationPrincipal UserPrincipal currentUser) {
         Optional<User> userOpt = userService.findById(id);
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "User not found"));
-        }
-
-        if (!currentUser.isAdmin()) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "You are not authorized to delete users"));
         }
 
         boolean deleted = userService.deleteUser(id);
